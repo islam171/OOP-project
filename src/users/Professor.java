@@ -1,5 +1,6 @@
 package users;
 
+import main.UniSystem;
 import research.PaperComparator;
 import research.ResearchPaper;
 import research.Researcher;

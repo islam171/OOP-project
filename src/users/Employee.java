@@ -1,6 +1,8 @@
 package users;
 
 
+import main.UniSystem;
+
 public class Employee extends User{
 
     private int salary;

@@ -1,4 +1,8 @@
-package users;;
+package users;
+
+import main.UniSystem;
+
+;
 
 public abstract class User {
     private String username;

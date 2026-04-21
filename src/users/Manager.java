@@ -1,6 +1,7 @@
 package users;
 
 import academic.ManagerType;
+import main.UniSystem;
 
 public class Manager extends Employee {
 

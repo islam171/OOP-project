@@ -1,10 +1,14 @@
-package users;
+package main;
 
 import academic.Course;
 import academic.Lesson;
 import research.ResearchProject;
 import research.Researcher;
 import research.ResearcherDecorator;
+import users.Admin;
+import users.Student;
+import users.Teacher;
+import users.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +22,7 @@ public class UniSystem {
     private static final List<User> users = new ArrayList<>();
     private static final List<Course> courses = new ArrayList<>();
     private static final List<Lesson> lessons = new ArrayList<>();
-    private List<ResearchProject> projects = new ArrayList<>();
+    private final List<ResearchProject> projects = new ArrayList<>();
 
     private User user;
 

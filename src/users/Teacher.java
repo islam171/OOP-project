@@ -2,11 +2,12 @@ package users;
 
 import academic.Course;
 import academic.Lesson;
+import main.UniSystem;
 
 import java.util.Scanner;
 
 public class Teacher extends Employee {
-    protected Teacher(String username, String password, UniSystem  system) {
+    public Teacher(String username, String password, UniSystem system) {
         super(username, password, system);
     }
 

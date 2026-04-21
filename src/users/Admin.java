@@ -1,6 +1,8 @@
 package users;
 
 
+import main.UniSystem;
+
 import java.util.Scanner;
 
 public class Admin extends User {

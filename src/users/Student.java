@@ -1,5 +1,7 @@
 package users;
 
+import main.UniSystem;
+
 public class Student extends User{
 
     private int credits;
