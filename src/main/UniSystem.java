@@ -2,13 +2,12 @@ package main;
 
 import academic.Course;
 import academic.Lesson;
+import academic.ManagerType;
+import academic.News;
 import research.ResearchProject;
 import research.Researcher;
 import research.ResearcherDecorator;
-import users.Admin;
-import users.Student;
-import users.Teacher;
-import users.User;
+import users.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,8 @@ import java.util.stream.Collectors;
 public class UniSystem {
 
     private static UniSystem instance; // singleton deign pattern
+
+    public static final List<News> news = new ArrayList<>();
 
     private static final List<User> users = new ArrayList<>();
     private static final List<Course> courses = new ArrayList<>();
@@ -52,6 +53,9 @@ public class UniSystem {
         addUser(teacher);
         Student student = new Student("islam1", "islam1", getInstance(), 21);
         addUser(student);
+
+        Manager manager = new Manager("manager", "qwerty", getInstance(), ManagerType.OR);
+        addUser(manager);
 
         Course course = new Course("Calculus", 6, teacher);
         addCourse(course);
@@ -168,4 +172,20 @@ public class UniSystem {
     public void addProject(ResearchProject project){
         this.projects.add(project);
     }
+
+
+    // news
+    public void addNews(News newsItem) {
+        news.add(newsItem);
+    }
+
+    public void deleteNews(int id) {
+        news.removeIf(news -> news.id == id);
+    }
+
+
+    public void updateNews(int id, News newPost) {
+        news.set(id, newPost);
+    }
+
 }
