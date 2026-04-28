@@ -13,8 +13,8 @@ public class Manager extends Employee {
 
     private ManagerType type;
 
-    public Manager(String username, String password, double salary, ManagerType type) {
-        super(username, password, salary);
+    public Manager(String username, String password, UniSystem system, double salary, ManagerType type) {
+        super(username, password,system, salary);
         setType(type);
     }
 
@@ -73,8 +73,7 @@ public class Manager extends Employee {
         String name = input.next();
         System.out.println("Enter number of credits: ");
         int credits = input.nextInt();
-        Database database = Database.getInstance();
-        database.addCourse(new Course(name, credits));
+        getSystem().addCourse(new Course(name, credits));
     }
 
     public void assignTeacher(Scanner input) {
@@ -82,8 +81,7 @@ public class Manager extends Employee {
         String name = input.next();
         System.out.println("Enter password: ");
         String password = input.next();
-        Database database = Database.getInstance();
-        database.addUser(new Teacher(name, password, 10.0, TeacherType.TUTOR));
+        getSystem().addUser(new Teacher(name, password, getSystem(), 10.0, TeacherType.TUTOR));
 
     }
 
@@ -96,19 +94,16 @@ public class Manager extends Employee {
         String title = input.next();
         System.out.println("Enter content: ");
         String content = input.next();
-        Database database = Database.getInstance();
-        database.addNews(new News(title, content));
+        getSystem().addNews(new News(title, content));
     }
 
     public void removeNews(Scanner input) {
         System.out.println("Enter ID of the news post: ");
         int id = input.nextInt();
-        Database database = Database.getInstance();
-        database.deleteNewById(id);
+        getSystem().deleteNewsById(id);
     }
 
     public void updateNews(Scanner input) {
-        Database database = Database.getInstance();
         System.out.println("Enter ID of the news post: ");
         int id = input.nextInt();
 
@@ -134,7 +129,7 @@ public class Manager extends Employee {
                     System.out.println("No new changes applied");
                 } else {
 
-                    database.updateNews(id, new News(title, content));
+                    getSystem().updateNews(id, new News(title, content));
                 }
 
             default:
@@ -143,8 +138,7 @@ public class Manager extends Employee {
     }
 
     public void viewStudentsByGPA() {
-        Database database = Database.getInstance();
-        List<Student> students = database.getStudents();
+        List<Student> students = getSystem().getStudents();
 
         students.sort(new ComparatorGPA());
 
@@ -158,8 +152,7 @@ public class Manager extends Employee {
     }
 
     public void viewStudentsByName() {
-        Database database = Database.getInstance();
-        List<Student> students = database.getStudents();
+        List<Student> students = getSystem().getStudents();
 
         students.sort(new ComparatorName());
 

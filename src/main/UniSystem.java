@@ -3,6 +3,7 @@ package main;
 import academic.Course;
 import academic.Lesson;
 import storage.Database;
+import storage.Log;
 import users.ManagerType;
 import academic.News;
 import research.ResearchProject;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 public class UniSystem {
 
     private static UniSystem instance; // singleton deign pattern
-    private User user;
+    private static User user;
 
     public UniSystem() {
 
@@ -40,10 +41,10 @@ public class UniSystem {
 
         Database database = Database.getInstance();
 
-        Admin admin = new Admin("admin", "admin");
-        Teacher teacher = new Teacher("islam", "islam", 10.0, TeacherType.TUTOR);
-        Student student = new Student("islam1", "islam1", "IS", 2);
-        Manager manager = new Manager("manager", "qwerty", 10.0, ManagerType.OR);
+        Admin admin = new Admin("admin", "admin", getInstance());
+        Teacher teacher = new Teacher("islam", "islam", getInstance(),10.0, TeacherType.TUTOR);
+        Student student = new Student("islam1", "islam1", getInstance(),"IS", 2);
+        Manager manager = new Manager("manager", "qwerty", getInstance(),10.0, ManagerType.OR);
         Course course = new Course("Calculus", 6, teacher);
         Course course1 = new Course("PP1", 6, teacher);
 
@@ -86,9 +87,12 @@ public class UniSystem {
     public boolean login(String username, String password) {
         Database database = Database.getInstance();
         for (User user : database.getUsers()) {
+            if(user == null) return false;
             if (user.getUsername().equals(username)) {
                 if (user.getPassword().equals(password)) {
                     setUser(user);
+                    Log log = new Log(getUser().getUsername(), "User logged in");
+                    database.addLogs(log);
                     return true;
                 }
             }
@@ -99,11 +103,14 @@ public class UniSystem {
 
     // auth
     public void logout() {
+        Database database = Database.getInstance();
+        Log log = new Log(getUser().getUsername(), "User logged out");
+        database.addLogs(log);
         setUser(null);
     }
 
     public User getUser() {
-        return user;
+        return this.user;
     }
 
     public void setUser(User user) {
@@ -116,6 +123,8 @@ public class UniSystem {
     public void addUser(User user) {
         Database database = Database.getInstance();
         database.addUser(user);
+        Log log = new Log(getUser().getUsername(), "Added user");
+        database.addLogs(log);
     }
 
     public void removeUser(int id) {
@@ -124,40 +133,56 @@ public class UniSystem {
 
     public List<User> getUsers() {
         Database database = Database.getInstance();
+        Log log = new Log(getUser().getUsername(), "Got user list");
+        database.addLogs(log);
         return database.getUsers();
     }
 
     public User getUserById(int userId){
         Database database = Database.getInstance();
+        Log log = new Log(getUser().getUsername(), "Got user by ID");
+        database.addLogs(log);
         return database.getUserById(userId);
     }
 
     public void updateUser(User user, Request req) {
         Database database = Database.getInstance();
         database.updateUser(user, req);
+        Log log = new Log(getUser().getUsername(), "Updated user");
+        database.addLogs(log);
     }
 
 
     // courses
     public List<Course> getCourses() {
         Database database = Database.getInstance();
+        Log log = new Log(getUser().getUsername(), "Got list of Courses");
+        database.addLogs(log);
         return database.getCourses();
     }
 
     public void addCourse(Course course) {
         Database database = Database.getInstance();
         database.addCourse(course);
+        Log log = new Log(getUser().getUsername(), "Added course");
+        database.addLogs(log);
     }
 
 
     // students
     public List<Student> getStudents() {
+        Database database = Database.getInstance();
+        Log log = new Log(getUser().getUsername(), "Got list of users");
+        database.addLogs(log);
         return this.getUsers().stream().filter(user -> user instanceof Student).map(user -> (Student) user).collect(Collectors.toList());
     }
 
     public Student getStudentById(int id) {
         for (Student student : this.getStudents()) {
             if (id == student.getId()) {
+                Database database = Database.getInstance();
+                Log log = new Log(getUser().getUsername(), "Got user by id");
+                database.addLogs(log);
                 return student;
             }
         }
@@ -167,12 +192,17 @@ public class UniSystem {
     // lessons
     public List<Lesson> getLessons() {
         Database database = Database.getInstance();
+        Log log = new Log(getUser().getUsername(), "Got list of lessons");
+        database.addLogs(log);
         return database.getLessons();
     }
 
     public Lesson getLessonsById(int id) {
         for (Lesson lesson : this.getLessons()) {
             if (id == lesson.getLessonsId()) {
+                Database database = Database.getInstance();
+                Log log = new Log(getUser().getUsername(), "Got lesson by Id");
+                database.addLogs(log);
                 return lesson;
             }
         }
@@ -182,12 +212,16 @@ public class UniSystem {
     // projects
     public List<ResearchProject> getProjects() {
         Database database = Database.getInstance();
+        Log log = new Log(getUser().getUsername(), "Got list of projects");
+        database.addLogs(log);
         return database.getProjects();
     }
 
     public void addProject(ResearchProject project) {
         Database database = Database.getInstance();
         database.addProject(project);
+        Log log = new Log(getUser().getUsername(), "Added project");
+        database.addLogs(log);
     }
 
 
@@ -195,17 +229,31 @@ public class UniSystem {
     public void addNews(News newsItem) {
         Database database = Database.getInstance();
         database.addNews(newsItem);
+        Log log = new Log(getUser().getUsername(), "Added news");
+        database.addLogs(log);
     }
 
-    public void deleteNews(int id) {
+    public void deleteNewsById(int id) {
         Database database = Database.getInstance();
         database.deleteNewById(id);
+        Log log = new Log(getUser().getUsername(), "Deleted news");
+        database.addLogs(log);
     }
 
 
     public void updateNews(int id, News newPost) {
         Database database = Database.getInstance();
         database.updateNews(id, newPost);
+        Log log = new Log(getUser().getUsername(), "Updated news");
+        database.addLogs(log);
+    }
+
+    // logs
+    public List<Log> getLogs(){
+        Database database = Database.getInstance();
+        Log log = new Log(getUser().getUsername(), "Got logs");
+        database.addLogs(log);
+        return database.getLogs();
     }
 
 }

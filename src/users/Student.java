@@ -16,9 +16,10 @@ public class Student extends User {
     private int totalCredits = 0;
     private int failsCount = 0;
     private Vector<Course> courses = new Vector<>();
-    public Student(String username, String password, UniSystem system, int yearOfStudy) {
+    public Student(String username, String password, UniSystem system, String major, int yearOfStudy) {
         super(username, password, system);
         this.yearOfStudy = yearOfStudy;
+        setMajor(major);
     }
 
     @Override
@@ -35,7 +36,6 @@ public class Student extends User {
         switch (command) {
             case 1 -> manageRegistration(input);
             case 2 -> viewTranscript();
-            case 4 -> update();
             case 0 -> { return false; }
             default -> System.out.println("Invalid command");
         }
@@ -117,52 +117,6 @@ public class Student extends User {
     }
     public void setGPA(double GPA) {
         this.GPA = GPA;
-    }
-
-
-
-
-    @Override
-    public void update() {
-        Scanner input = new Scanner(System.in);
-
-        int command;
-        do {
-            System.out.print("Choose commands\n");
-            System.out.print("Change username: 1\n");
-            System.out.print("Change password: 2\n");
-            System.out.print("Change major: 3\n");
-            System.out.print("Change course: 4\n");
-            System.out.print("Exit: 0\n");
-            System.out.print("Enter command: ");
-            command = input.nextInt();
-
-            switch (command) {
-                case 0-> {
-                    break;
-                }
-                case 1 -> {
-                    System.out.print("Enter new username: ");
-                    setUsername(input.next());
-                }
-                case 2 -> {
-                    System.out.print("Enter new password: ");
-                    setPassword(input.next());
-                }
-                case 3 -> {
-                    System.out.print("Enter new major: ");
-                    setMajor(input.next());
-                }
-                case 4 -> {
-                    System.out.print("Enter new course: ");
-                    setCourse(input.nextInt());
-                }
-                default -> {
-                    System.out.print("Command is invalid");
-                }
-            }
-        } while (command != 0);
-        System.out.print("\n");
     }
 
 }
