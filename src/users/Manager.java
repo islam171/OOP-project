@@ -12,8 +12,8 @@ public class Manager extends Employee {
 
     private ManagerType type;
 
-    public Manager(String username, String password, UniSystem system, ManagerType type) {
-        super(username, password, system);
+    public Manager(String username, String password, UniSystem system, double salary, ManagerType type) {
+        super(username, password, system, salary);
         setType(type);
     }
 
@@ -82,7 +82,7 @@ public class Manager extends Employee {
         System.out.println("Enter password: ");
         String password = input.next();
         UniSystem system = this.getSystem();
-        this.getSystem().addUser(new Teacher(name, password, system));
+        this.getSystem().addUser(new Teacher(name, password, system, 10.0, TeacherType.TUTOR));
 
     }
 
@@ -144,6 +144,8 @@ public class Manager extends Employee {
 
 
         for (Student student : students) {
+            System.out.println("Student's name: " + student.getUsername() +
+                    "; Student's GPA: " + student.getGPA());
 
         }
 
@@ -156,6 +158,8 @@ public class Manager extends Employee {
 
 
         for (Student student : students) {
+            System.out.println("Student's name: " + student.getUsername() +
+                    " Student's GPA: " + student.getGPA());
 
         }
     }

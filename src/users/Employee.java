@@ -9,8 +9,9 @@ public class Employee extends User{
 
     private double salary;
 
-    public Employee(String username, String password, UniSystem system) {
+    public Employee(String username, String password, UniSystem system, double salary) {
         super(username, password, system);
+        setSalary(salary);
     }
 
     @Override

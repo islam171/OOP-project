@@ -2,6 +2,7 @@ package users;
 
 
 import main.UniSystem;
+import storage.Database;
 
 import java.util.Scanner;
 
@@ -29,7 +30,7 @@ public class Admin extends User {
             case 0:
                 return false;
             case 1:
-                addUser(input);
+                addUser();
                 break;
             case 2:
                 showUsers();
@@ -47,36 +48,84 @@ public class Admin extends User {
         return true;
     }
 
-    public void addUser(Scanner input) {
-        System.out.print("\n");
-        System.out.println("Enter username:");
-        String username = input.next();
-        System.out.println("Enter password:");
-        String password = input.next();
-        System.out.println("Enter credits:");
-        int credits = input.nextInt();
+    public void addUser() {
 
-        User student = new Student(username, password, this.getSystem(), credits);
-        this.getSystem().addUser(student);
+        Database database= Database.getInstance();
+        Scanner input = new Scanner(System.in);
+        System.out.println("\n--- Adding New User ---");
+
+        System.out.println("Select role: 1-Student, 2-Teacher, 3-Manager");
+        System.out.print("Role: ");
+        int roleChoice = input.nextInt();
+        input.nextLine(); // Очистка буфера
+
+
+        System.out.print("Enter new ID: ");
+        int newId = input.nextInt();
+        input.nextLine();
+
+        System.out.print("Enter full name: ");
+        String name = input.nextLine();
+
+        System.out.print("Enter password: ");
+        String pass = input.nextLine();
+
+        User newUser = null;
+
+        switch (roleChoice) {
+            case 1 -> { // Student
+                System.out.print("Enter major: ");
+                String major = input.next();
+                System.out.print("Enter year: ");
+                int year = input.nextInt();
+                newUser = new Student(name, pass, getSystem(), major, year);
+            }
+            case 2 -> { // Teacher
+                System.out.print("Enter salary: ");
+                double salary = input.nextDouble();
+                System.out.print("Enter teacher type (1-Tutor, 2-Professor): ");
+                int type = input.nextInt();
+                TeacherType title = (type == 2) ? TeacherType.PROFESSOR : TeacherType.TUTOR;
+                newUser = new Teacher(name, pass, getSystem(), salary, title);
+            }
+            case 3 -> { // Manager
+                System.out.print("Enter salary: ");
+                double salary = input.nextDouble();
+                System.out.print("Enter manager type (1-OR, 2-Finance): ");
+                int type = input.nextInt();
+                ManagerType mType = (type == 2) ? ManagerType.FINANCE : ManagerType.OR;
+                newUser = new Manager(name, pass, getSystem(), salary, mType);
+            }
+            default -> System.out.println("Invalid role!");
+        }
+
+        // 4. Сохраняем в базу
+        if (newUser != null) {
+            database.getUsers().add(newUser);
+            System.out.println("User added successfully: " + newUser);
+        }
     }
 
     public void showUsers() {
         System.out.print("\n");
         System.out.print("All Users: \n");
-        for (User user : this.getSystem().getUsers()) {
+        Database database = Database.getInstance();
+        for (User user : database.getUsers()) {
             System.out.print(user + "\n");
         }
     }
 
     public void removeUser(Scanner input) {
+        Database database = Database.getInstance();
         System.out.print("\n");
         System.out.print("Enter user id: ");
         int id = input.nextInt();
-        this.getSystem().removeUser(id);
+        database.removeUser(id);
     }
 
 
     public void updateUser(){
+        Database database = Database.getInstance();
         System.out.print("\n");
         Scanner input = new Scanner(System.in);
 
@@ -84,7 +133,7 @@ public class Admin extends User {
         System.out.print("Enter user Id: ");
         int id = input.nextInt();
 
-        User user = this.getSystem().getUserById(id);
+        User user = database.getUserById(id);
         if (user == null) {
             System.out.print("User is not found");
         }
@@ -161,8 +210,8 @@ public class Admin extends User {
                 }
             }
         } while (command != 0);
-        this.getSystem().updateUser(user, req);
 
+        database.updateUser(user, req);
     }
 
 }

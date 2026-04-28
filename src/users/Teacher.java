@@ -10,8 +10,9 @@ public class Teacher extends Employee {
 
     private TeacherType teacherType;
 
-    public Teacher(String username, String password, UniSystem system) {
-        super(username, password, system);
+    public Teacher(String username, String password, UniSystem system, double salary, TeacherType teacherType) {
+        super(username, password, system, salary);
+        setTeacherType(teacherType);
     }
 
 

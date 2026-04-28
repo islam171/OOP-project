@@ -19,6 +19,7 @@ public class Database {
     private List<Lesson> lessons = new ArrayList<>();
     private List<ResearchProject> projects = new ArrayList<>();
     private List<News> news = new ArrayList<>();
+    private List<Log> logs = new ArrayList<>();
 
     public static Database getInstance() {
         if (instance == null) {
@@ -31,6 +32,10 @@ public class Database {
 
     public void addUser(User user) {
         this.users.add(user);
+    }
+
+    public void removeUser(int id) {
+        this.users.removeIf(user -> user.getId() == id);
     }
 
     public List<User> getUsers() {
@@ -104,4 +109,11 @@ public class Database {
         this.news = this.news.stream().map(item -> item.getId() == id ? newPost : item).collect(Collectors.toList());
     }
 
+    public List<Log> getLogs() {
+        return logs;
+    }
+
+    public void addLogs(Log log){
+        this.logs.add(log);
+    }
 }
