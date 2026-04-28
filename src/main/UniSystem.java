@@ -9,7 +9,6 @@ import research.Researcher;
 import research.ResearcherDecorator;
 import users.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -17,14 +16,6 @@ import java.util.stream.Collectors;
 public class UniSystem {
 
     private static UniSystem instance; // singleton deign pattern
-
-    public static final List<News> news = new ArrayList<>();
-
-    private static final List<User> users = new ArrayList<>();
-    private static final List<Course> courses = new ArrayList<>();
-    private static final List<Lesson> lessons = new ArrayList<>();
-    private final List<ResearchProject> projects = new ArrayList<>();
-
     private User user;
 
     public UniSystem(){
@@ -46,24 +37,24 @@ public class UniSystem {
 
     public void run(){
 
+        Database database = new Database();
+
         Admin admin = new Admin("admin", "admin", getInstance());
-        addUser(admin);
-
         Teacher teacher = new Teacher("islam", "islam", getInstance());
-        addUser(teacher);
         Student student = new Student("islam1", "islam1", getInstance(), 21);
-        addUser(student);
-
         Manager manager = new Manager("manager", "qwerty", getInstance(), ManagerType.OR);
-        addUser(manager);
-
         Course course = new Course("Calculus", 6, teacher);
-        addCourse(course);
         Course course1 = new Course("PP1", 6, teacher);
-        addCourse(course1);
 
         Researcher researcher = new ResearcherDecorator(teacher); // пример как учитель может стать иследователем
 
+
+        database.addUser(admin);
+        database.addUser(admin);
+        database.addUser(student);
+        database.addUser(manager);
+        database.addCourse(course);
+        database.addCourse(course1);
 
 
         // авторизуем пользователя
@@ -86,7 +77,8 @@ public class UniSystem {
     }
 
     public boolean login(String username, String password){
-        for(User user : users){
+        Database database = new Database();
+        for(User user : database.getUsers()){
             if(user.getUsername().equals(username)){
                 if(user.getPassword().equals(password)){
                     setUser(user);
@@ -97,11 +89,12 @@ public class UniSystem {
         return false;
     }
 
+
+    // auth
     public void logout(){
         setUser(null);
     }
 
-    // auth
     public User getUser() {
         return user;
     }
@@ -114,7 +107,8 @@ public class UniSystem {
     // users
 
     public void addUser(User user){
-        users.add(user);
+        Database database = new Database();
+        database.addUser(user);
     }
 
     public void removeUser(int id){
@@ -122,17 +116,20 @@ public class UniSystem {
     }
 
     public List<User> getUsers(){
-        return users;
+        Database database = new Database();
+        return database.getUsers();
     }
 
 
     // courses
     public List<Course> getCourses(){
-        return courses;
+        Database database = new Database();
+        return database.getCourses();
     }
 
     public void addCourse(Course course){
-        courses.add(course);
+        Database database = new Database();
+        database.addCourse(course);
     }
 
 
@@ -152,7 +149,8 @@ public class UniSystem {
 
     // lessons
     public List<Lesson> getLessons(){
-        return lessons;
+        Database database = new Database();
+        return database.getLessons();
     }
 
     public Lesson getLessonsById(int id){
@@ -166,26 +164,31 @@ public class UniSystem {
 
     // projects
     public List<ResearchProject> getProjects() {
-        return projects;
+        Database database = new Database();
+        return database.getProjects();
     }
 
     public void addProject(ResearchProject project){
-        this.projects.add(project);
+        Database database = new Database();
+        database.addProject(project);
     }
 
 
     // news
     public void addNews(News newsItem) {
-        news.add(newsItem);
+        Database database = new Database();
+        database.addNews(newsItem);
     }
 
     public void deleteNews(int id) {
-        news.removeIf(news -> news.id == id);
+        Database database = new Database();
+        database.deleteNewById(id);
     }
 
 
     public void updateNews(int id, News newPost) {
-        news.set(id, newPost);
+        Database database = new Database();
+        database.updateNews(id, newPost);
     }
 
 }

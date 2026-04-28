@@ -19,4 +19,7 @@ public class News {
         this.content = content;
     }
 
+    public int getId() {
+        return id;
+    }
 }
