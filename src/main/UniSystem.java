@@ -2,7 +2,7 @@ package main;
 
 import academic.Course;
 import academic.Lesson;
-import academic.ManagerType;
+import users.ManagerType;
 import academic.News;
 import research.ResearchProject;
 import research.Researcher;
@@ -37,7 +37,7 @@ public class UniSystem {
 
     public void run(){
 
-        Database database = new Database();
+        Database database = Database.getInstance();
 
         Admin admin = new Admin("admin", "admin", getInstance());
         Teacher teacher = new Teacher("islam", "islam", getInstance());
@@ -50,7 +50,7 @@ public class UniSystem {
 
 
         database.addUser(admin);
-        database.addUser(admin);
+        database.addUser(teacher);
         database.addUser(student);
         database.addUser(manager);
         database.addCourse(course);
@@ -66,18 +66,24 @@ public class UniSystem {
 
         boolean logged = login(username, password);
 
+
         if(logged){
             boolean status = true;
 
             while(status){
+                System.out.print("\n");
+                System.out.print("Hello " + this.getUser().getUsername() + "!\n");
+                System.out.print("Coose commands: \n");
                 status = getUser().showCommands();
             }
+        }else{
+            System.out.println("Invalid username or password");
         }
 
     }
 
     public boolean login(String username, String password){
-        Database database = new Database();
+        Database database = Database.getInstance();
         for(User user : database.getUsers()){
             if(user.getUsername().equals(username)){
                 if(user.getPassword().equals(password)){
@@ -107,7 +113,7 @@ public class UniSystem {
     // users
 
     public void addUser(User user){
-        Database database = new Database();
+        Database database = Database.getInstance();
         database.addUser(user);
     }
 
@@ -116,19 +122,19 @@ public class UniSystem {
     }
 
     public List<User> getUsers(){
-        Database database = new Database();
+        Database database = Database.getInstance();
         return database.getUsers();
     }
 
 
     // courses
     public List<Course> getCourses(){
-        Database database = new Database();
+        Database database = Database.getInstance();
         return database.getCourses();
     }
 
     public void addCourse(Course course){
-        Database database = new Database();
+        Database database = Database.getInstance();
         database.addCourse(course);
     }
 
@@ -149,7 +155,7 @@ public class UniSystem {
 
     // lessons
     public List<Lesson> getLessons(){
-        Database database = new Database();
+        Database database = Database.getInstance();
         return database.getLessons();
     }
 
@@ -164,30 +170,30 @@ public class UniSystem {
 
     // projects
     public List<ResearchProject> getProjects() {
-        Database database = new Database();
+        Database database = Database.getInstance();
         return database.getProjects();
     }
 
     public void addProject(ResearchProject project){
-        Database database = new Database();
+        Database database = Database.getInstance();
         database.addProject(project);
     }
 
 
     // news
     public void addNews(News newsItem) {
-        Database database = new Database();
+        Database database = Database.getInstance();
         database.addNews(newsItem);
     }
 
     public void deleteNews(int id) {
-        Database database = new Database();
+        Database database = Database.getInstance();
         database.deleteNewById(id);
     }
 
 
     public void updateNews(int id, News newPost) {
-        Database database = new Database();
+        Database database = Database.getInstance();
         database.updateNews(id, newPost);
     }
 

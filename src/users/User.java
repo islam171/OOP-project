@@ -2,7 +2,8 @@ package users;
 
 import main.UniSystem;
 
-;
+import java.util.Map;
+import java.util.Scanner;
 
 public abstract class User {
     private String username;
@@ -20,7 +21,7 @@ public abstract class User {
 
     @Override
     public String toString() {
-        return "Username: " + this.getUsername() + "; Id: " + getId() + ";";
+        return "Id: " + getId() + "; Username: " + this.getUsername() + ";";
     }
 
     public String getUsername() {
@@ -56,4 +57,7 @@ public abstract class User {
     public void setSystem(UniSystem system) {
         this.system = system;
     }
+
+    public abstract void update();
+
 }

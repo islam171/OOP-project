@@ -20,7 +20,7 @@ public class Database {
     private List<ResearchProject> projects = new ArrayList<>();
     private List<News> news = new ArrayList<>();
 
-    public Database getInstance(){
+    public static Database getInstance(){
         if(instance == null){
             instance = new Database();
         }

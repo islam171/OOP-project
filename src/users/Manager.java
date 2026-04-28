@@ -1,11 +1,9 @@
 package users;
 
 import academic.Course;
-import academic.ManagerType;
 import academic.News;
 import main.UniSystem;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -18,6 +16,7 @@ public class Manager extends Employee {
         super(username, password, system);
         setType(type);
     }
+
     @Override
     public boolean showCommands() {
 
@@ -61,13 +60,14 @@ public class Manager extends Employee {
                 viewStudentsByName();
                 break;
 
-            default: return false;
+            default:
+                return false;
         }
 
         return true;
     }
 
-    public void addCourse(Scanner input){
+    public void addCourse(Scanner input) {
         System.out.println("Enter name: ");
         String name = input.next();
         System.out.println("Enter number of credits: ");
@@ -76,7 +76,7 @@ public class Manager extends Employee {
         this.getSystem().addCourse(new Course(name, credits));
     }
 
-    public void assignTeacher(Scanner input){
+    public void assignTeacher(Scanner input) {
         System.out.println("Enter name of the teacher: ");
         String name = input.next();
         System.out.println("Enter password: ");
@@ -86,11 +86,11 @@ public class Manager extends Employee {
 
     }
 
-    public void approveRegister(){
+    public void approveRegister() {
         System.out.println("Registry complete!");
     }
 
-    public void addNews(Scanner input){
+    public void addNews(Scanner input) {
         System.out.println("Enter title: ");
         String title = input.next();
         System.out.println("Enter content: ");
@@ -98,7 +98,7 @@ public class Manager extends Employee {
         this.getSystem().addNews(new News(title, content));
     }
 
-    public void removeNews(Scanner input){
+    public void removeNews(Scanner input) {
         System.out.println("Enter ID of the news post: ");
         int id = input.nextInt();
         this.getSystem().deleteNews(id);
@@ -128,34 +128,34 @@ public class Manager extends Employee {
             case 3:
                 if (content.isEmpty() && title.isEmpty()) {
                     System.out.println("No new changes applied");
-                }
-                else {
+                } else {
                     this.getSystem().updateNews(id, new News(title, content));
                 }
 
-            default: break;
+            default:
+                break;
         }
     }
 
-    public void viewStudentsByGPA(){
+    public void viewStudentsByGPA() {
         List<Student> students = this.getSystem().getStudents();
 
         students.sort(new ComparatorGPA());
 
 
-        for(Student student: students) {
+        for (Student student : students) {
 
         }
 
     }
 
-    public void viewStudentsByName(){
+    public void viewStudentsByName() {
         List<Student> students = this.getSystem().getStudents();
 
         students.sort(new ComparatorName());
 
 
-        for(Student student: students) {
+        for (Student student : students) {
 
         }
     }
@@ -168,4 +168,55 @@ public class Manager extends Employee {
     public void setType(ManagerType type) {
         this.type = type;
     }
+
+    public void update() {
+        Scanner input = new Scanner(System.in);
+
+        int command;
+        do {
+            System.out.print("Choose commands: \n");
+            System.out.print("Change username: 1\n");
+            System.out.print("Change password: 2\n");
+            System.out.print("Change salary: 3\n");
+            System.out.print("Change managerType: 3\n");
+            System.out.print("Exit: 0\n");
+            System.out.print("Enter commands: ");
+            command = input.nextInt();
+            switch (command) {
+                case 0-> {
+                    break;
+                }
+                case 1 -> {
+                    System.out.print("Enter new username: ");
+                    setUsername(input.next());
+                }
+                case 2 -> {
+                    System.out.print("Enter new password: ");
+                    setPassword(input.next());
+                }
+                case 3 -> {
+                    System.out.print("Enter new salary: ");
+                    setSalary(input.nextInt());
+                }
+                case 4 -> {
+                    System.out.print("Enter new managerType: ");
+
+                    for(ManagerType managerType : ManagerType.values()){
+                        System.out.print(managerType + " " + managerType.getNumber() + "\n");
+                    }
+                    int managerT = input.nextInt();
+                    for(ManagerType managerType : ManagerType.values()){
+                        if(managerType.getNumber() == managerT){
+                            setType(managerType);
+                        }
+                    }
+                }
+                default -> {
+                    System.out.print("Command is invalid, try again");
+                }
+            }
+        } while (command != 0);
+        System.out.println();
+    }
+
 }
