@@ -2,8 +2,8 @@ package users;
 
 import main.UniSystem;
 
-import java.util.Map;
-import java.util.Scanner;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public abstract class User {
     private String username;
@@ -57,7 +57,4 @@ public abstract class User {
     public void setSystem(UniSystem system) {
         this.system = system;
     }
-
-    public abstract void update();
-
 }

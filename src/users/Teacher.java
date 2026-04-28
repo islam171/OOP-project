@@ -7,6 +7,9 @@ import main.UniSystem;
 import java.util.Scanner;
 
 public class Teacher extends Employee {
+
+    private TeacherType teacherType;
+
     public Teacher(String username, String password, UniSystem system) {
         super(username, password, system);
     }
@@ -85,5 +88,13 @@ public class Teacher extends Employee {
 
     public void rateTeachers(){
 
+    }
+
+    public TeacherType getTeacherType() {
+        return teacherType;
+    }
+
+    public void setTeacherType(TeacherType teacherType) {
+        this.teacherType = teacherType;
     }
 }
