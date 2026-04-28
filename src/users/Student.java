@@ -9,13 +9,14 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class Student extends User {
-    private int course;
+
     private int yearOfStudy;
     private String major;
     private double GPA;
     private int totalCredits = 0;
     private int failsCount = 0;
     private Vector<Course> courses = new Vector<>();
+
     public Student(String username, String password, UniSystem system, String major, int yearOfStudy) {
         super(username, password, system);
         this.yearOfStudy = yearOfStudy;
@@ -100,12 +101,6 @@ public class Student extends User {
     }
 
 
-    public int getCourse() {
-        return course;
-    }
-    public void setCourse(int course) {
-        this.course = course;
-    }
     public String getMajor() {
         return major;
     }
@@ -119,4 +114,11 @@ public class Student extends User {
         this.GPA = GPA;
     }
 
+    public int getYearOfStudy() {
+        return yearOfStudy;
+    }
+
+    public void setYearOfStudy(int yearOfStudy) {
+        this.yearOfStudy = yearOfStudy;
+    }
 }
