@@ -61,6 +61,11 @@ public class Database {
         }
     }
 
+    // Students
+    public List<Student> getStudents() {
+        return this.users.stream().filter(user -> user instanceof Student).map(user -> (Student) user).collect(Collectors.toList());
+    }
+
     // Courses
 
     public void addCourse(Course course) {

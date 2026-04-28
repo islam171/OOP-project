@@ -14,8 +14,8 @@ public class Student extends User{
     private String major;
     private double GPA;
 
-    public Student(String username, String password, UniSystem system, String major, int course) {
-        super(username, password, system);
+    public Student(String username, String password, String major, int course) {
+        super(username, password);
         setMajor(major);
         setCourse(course);
     }

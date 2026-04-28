@@ -3,6 +3,7 @@ package users;
 import academic.Course;
 import academic.Lesson;
 import main.UniSystem;
+import storage.Database;
 
 import java.util.Scanner;
 
@@ -10,8 +11,8 @@ public class Teacher extends Employee {
 
     private TeacherType teacherType;
 
-    public Teacher(String username, String password, UniSystem system, double salary, TeacherType teacherType) {
-        super(username, password, system, salary);
+    public Teacher(String username, String password, double salary, TeacherType teacherType) {
+        super(username, password, salary);
         setTeacherType(teacherType);
     }
 
@@ -45,7 +46,8 @@ public class Teacher extends Employee {
 
     public void viewCourses(){
         System.out.println("Your courses: ");
-        for (Course course : this.getSystem().getCourses()){
+        Database database= Database.getInstance();
+        for (Course course : database.getCourses()){
             if(course.getInstructor().equals(this)){
                 System.out.println(course);
             }
@@ -53,15 +55,17 @@ public class Teacher extends Employee {
     }
 
     public void viewStudents(){
+        Database database= Database.getInstance();
         System.out.println("Students: ");
-        for(User student : this.getSystem().getStudents()){
+        for(User student : database.getStudents()){
             System.out.println(student);
         }
     }
 
     public void viewLessons(){
+        Database database= Database.getInstance();
         System.out.print("Lessons: ");
-        for(Lesson lesson : this.getSystem().getLessons()){
+        for(Lesson lesson : database.getLessons()){
             if(lesson.getCourse().getInstructor().equals(this)){
                 System.out.println(lesson);
             }

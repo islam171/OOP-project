@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public class Admin extends User {
 
-    public Admin(String username, String password, UniSystem system) {
-        super(username, password, system);
+    public Admin(String username, String password) {
+        super(username, password);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class Admin extends User {
                 String major = input.next();
                 System.out.print("Enter year: ");
                 int year = input.nextInt();
-                newUser = new Student(name, pass, getSystem(), major, year);
+                newUser = new Student(name, pass, major, year);
             }
             case 2 -> { // Teacher
                 System.out.print("Enter salary: ");
@@ -86,7 +86,7 @@ public class Admin extends User {
                 System.out.print("Enter teacher type (1-Tutor, 2-Professor): ");
                 int type = input.nextInt();
                 TeacherType title = (type == 2) ? TeacherType.PROFESSOR : TeacherType.TUTOR;
-                newUser = new Teacher(name, pass, getSystem(), salary, title);
+                newUser = new Teacher(name, pass, salary, title);
             }
             case 3 -> { // Manager
                 System.out.print("Enter salary: ");
@@ -94,7 +94,7 @@ public class Admin extends User {
                 System.out.print("Enter manager type (1-OR, 2-Finance): ");
                 int type = input.nextInt();
                 ManagerType mType = (type == 2) ? ManagerType.FINANCE : ManagerType.OR;
-                newUser = new Manager(name, pass, getSystem(), salary, mType);
+                newUser = new Manager(name, pass, salary, mType);
             }
             default -> System.out.println("Invalid role!");
         }
