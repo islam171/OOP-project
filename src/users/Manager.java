@@ -144,6 +144,8 @@ public class Manager extends Employee {
 
 
         for (Student student : students) {
+            System.out.println("Student's name: " + student.getUsername() +
+                    "; Student's GPA: " + student.getGPA());
 
         }
 
@@ -156,6 +158,8 @@ public class Manager extends Employee {
 
 
         for (Student student : students) {
+            System.out.println("Student's name: " + student.getUsername() +
+                    " Student's GPA: " + student.getGPA());
 
         }
     }

@@ -37,48 +37,54 @@ public class UniSystem {
 
     public void run(){
 
-        Database database = Database.getInstance();
+            Database database = Database.getInstance();
 
-        Admin admin = new Admin("admin", "admin", getInstance());
-        Teacher teacher = new Teacher("islam", "islam", getInstance());
-        Student student = new Student("islam1", "islam1", getInstance(), 21);
-        Manager manager = new Manager("manager", "qwerty", getInstance(), ManagerType.OR);
-        Course course = new Course("Calculus", 6, teacher);
-        Course course1 = new Course("PP1", 6, teacher);
+            Admin admin = new Admin("admin", "admin", getInstance());
+            Teacher teacher = new Teacher("islam", "islam", getInstance());
+            Student student = new Student("islam1", "islam1", getInstance(), 21);
 
-        Researcher researcher = new ResearcherDecorator(teacher); // пример как учитель может стать иследователем
+            Student student2 = new Student("stud2", "qwerty", getInstance(), 21);
+            Student student3 = new Student("stud3", "qwerty", getInstance(), 21);
+            Manager manager = new Manager("manager", "qwerty", getInstance(), ManagerType.OR);
+            Course course = new Course("Calculus", 6, teacher);
+            Course course1 = new Course("PP1", 6, teacher);
+
+            Researcher researcher = new ResearcherDecorator(teacher); // пример как учитель может стать иследователем
+
+            student.setGPA(4.0);
+            student2.setGPA(3.0);
+            student3.setGPA(3.9);
+
+            database.addUser(admin);
+            database.addUser(teacher);
+            database.addUser(student);
+            database.addUser(manager);
+            database.addCourse(course);
+            database.addCourse(course1);
+            database.addUser(student2);
+            database.addUser(student3);
+            // авторизуем пользователя
+            Scanner input = new Scanner(System.in);
+            System.out.print("Enter username: ");
+            String username = input.nextLine();
+            System.out.print("Enter password: ");
+            String password = input.nextLine();
+
+            boolean logged = login(username, password);
 
 
-        database.addUser(admin);
-        database.addUser(teacher);
-        database.addUser(student);
-        database.addUser(manager);
-        database.addCourse(course);
-        database.addCourse(course1);
+            if(logged){
+                boolean status = true;
 
-
-        // авторизуем пользователя
-        Scanner input = new Scanner(System.in);
-        System.out.print("Enter username: ");
-        String username = input.nextLine();
-        System.out.print("Enter password: ");
-        String password = input.nextLine();
-
-        boolean logged = login(username, password);
-
-
-        if(logged){
-            boolean status = true;
-
-            while(status){
-                System.out.print("\n");
-                System.out.print("Hello " + this.getUser().getUsername() + "!\n");
-                System.out.print("Coose commands: \n");
-                status = getUser().showCommands();
+                while(status){
+                    System.out.print("\n");
+                    System.out.print("Hello " + this.getUser().getUsername() + "!\n");
+                    System.out.print("Coose commands: \n");
+                    status = getUser().showCommands();
+                }
+            }else{
+                System.out.println("Invalid username or password");
             }
-        }else{
-            System.out.println("Invalid username or password");
-        }
 
     }
 
