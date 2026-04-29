@@ -11,7 +11,11 @@ import javax.xml.crypto.Data;
 import java.util.Scanner;
 import java.util.Vector;
 
-public class Student extends User {
+interface retakes{
+     void RetakeCourse();
+ }
+
+public class Student extends User implements retakes {
     private int course;
     private int yearOfStudy;
     private String major;
@@ -25,7 +29,11 @@ public class Student extends User {
         this.yearOfStudy = yearOfStudy;
         this.specialty = specialty;
     }
-
+    
+    public void RetakeCourse(){
+        System.out.print("gg guys");
+    }
+    
     @Override
     public boolean showCommands() {
         Scanner input = new Scanner(System.in);
