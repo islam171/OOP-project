@@ -46,6 +46,10 @@ public class Database {
         return this.getUsers().stream().filter(item -> item.getId() == id).findFirst().orElse(null);
     }
 
+
+
+
+
     public void updateUser(User user, Request req) {
         if (req.username != null) user.setUsername(req.username);
         if (req.password != null) user.setUsername(req.password);
@@ -85,6 +89,12 @@ public class Database {
     public List<Lesson> getLessons() {
         return this.lessons;
     }
+
+    public Lesson getLessonById(int id) {
+        return this.lessons.stream().filter(item -> item.getLessonsId() == id).findFirst().orElse(null);
+    }
+
+
 
     // Projects
 

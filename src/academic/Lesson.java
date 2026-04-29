@@ -13,12 +13,14 @@ public class Lesson {
     private Student student;
     private static int ID = 0;
     private int lessonsId;
+    private LessonType lessonType;
 
-    public Lesson(LocalDate date, Course course, Student student){
+    public Lesson(LocalDate date, Course course, Student student, LessonType lessonType){
         setCourse(course);
         setDate(date);
         setStudent(student);
         setLessonsId(ID++);
+        this.lessonType = lessonType;
     }
 
     public String toString(){
@@ -72,4 +74,14 @@ public class Lesson {
     public void setLessonsId(int lessonsId) {
         this.lessonsId = lessonsId;
     }
+
+
+    public LessonType getLessonType() {
+        return this.lessonType;
+    }
+
+    public void setLessonType(LessonType lessonType) {
+        this.lessonType = lessonType;
+    }
+
 }

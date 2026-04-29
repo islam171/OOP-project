@@ -5,6 +5,9 @@ import main.UniSystem;
 import academic.Course;
 import academic.Lesson;
 import academic.Mark;
+import storage.Database;
+
+import javax.xml.crypto.Data;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -15,10 +18,12 @@ public class Student extends User {
     private double GPA;
     private int totalCredits = 0;
     private int failsCount = 0;
+    private String specialty;
     private Vector<Course> courses = new Vector<>();
-    public Student(String username, String password, UniSystem system, int yearOfStudy) {
-        super(username, password, system);
+    public Student(String username, String password, String specialty, int yearOfStudy) {
+        super(username, password);
         this.yearOfStudy = yearOfStudy;
+        this.specialty = specialty;
     }
 
     @Override
@@ -28,14 +33,12 @@ public class Student extends User {
         System.out.println("1 View + register for courses");
         System.out.println("2 View transcript & marks");
         System.out.println("3 View teacher info");
-        System.out.println("4 Settings");
         System.out.println("0 Logout");
 
         int command = input.nextInt();
         switch (command) {
             case 1 -> manageRegistration(input);
             case 2 -> viewTranscript();
-            case 4 -> update();
             case 0 -> { return false; }
             default -> System.out.println("Invalid command");
         }
@@ -53,7 +56,8 @@ public class Student extends User {
     }
 
     public void setAttendance(int lessonId, boolean isPresent) {
-        Lesson lesson = getSystem().getLessonsById(lessonId);
+        Database database = Database.getInstance();
+        Lesson lesson = database.getLessonById(lessonId);
         if (lesson != null && lesson.getStudent().equals(this)) {
             if (isPresent) {
                 lesson.setAttendance(Attendance.ATTENDED);
@@ -67,13 +71,14 @@ public class Student extends User {
     }
 
     private void manageRegistration(Scanner input) {
+        Database database = Database.getInstance();
         System.out.println("Available courses: ");
-        getSystem().getCourses().forEach(System.out::println);
+        database.getCourses().forEach(System.out::println);
         System.out.print("Enter course name to register: ");
         String name = input.next();
 
 
-        for (Course c : getSystem().getCourses()) {
+        for (Course c : database.getCourses()) {
             if (c.getName().equalsIgnoreCase(name)) {
                 if (this.totalCredits + c.getCredit() <= 21) {
                     this.courses.add(c);
@@ -122,47 +127,5 @@ public class Student extends User {
 
 
 
-    @Override
-    public void update() {
-        Scanner input = new Scanner(System.in);
-
-        int command;
-        do {
-            System.out.print("Choose commands\n");
-            System.out.print("Change username: 1\n");
-            System.out.print("Change password: 2\n");
-            System.out.print("Change major: 3\n");
-            System.out.print("Change course: 4\n");
-            System.out.print("Exit: 0\n");
-            System.out.print("Enter command: ");
-            command = input.nextInt();
-
-            switch (command) {
-                case 0-> {
-                    break;
-                }
-                case 1 -> {
-                    System.out.print("Enter new username: ");
-                    setUsername(input.next());
-                }
-                case 2 -> {
-                    System.out.print("Enter new password: ");
-                    setPassword(input.next());
-                }
-                case 3 -> {
-                    System.out.print("Enter new major: ");
-                    setMajor(input.next());
-                }
-                case 4 -> {
-                    System.out.print("Enter new course: ");
-                    setCourse(input.nextInt());
-                }
-                default -> {
-                    System.out.print("Command is invalid");
-                }
-            }
-        } while (command != 0);
-        System.out.print("\n");
-    }
 
 }
