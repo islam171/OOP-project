@@ -37,8 +37,6 @@ public abstract class User {
         this.password = password;
     }
 
-    public abstract boolean showCommands();
-
     public int getId() {
         return id;
     }
