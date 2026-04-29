@@ -34,8 +34,8 @@ public class Database {
         this.users.add(user);
     }
 
-    public void removeUser(int id) {
-        this.users.removeIf(user -> user.getId() == id);
+    public void deleteUser(User user) {
+        this.users.remove(user);
     }
 
     public List<User> getUsers() {
@@ -45,10 +45,6 @@ public class Database {
     public User getUserById(int id) {
         return this.getUsers().stream().filter(item -> item.getId() == id).findFirst().orElse(null);
     }
-
-
-
-
 
     public void updateUser(User user, Request req) {
         if (req.username != null) user.setUsername(req.username);
@@ -65,10 +61,6 @@ public class Database {
         }
     }
 
-    // Students
-    public List<Student> getStudents() {
-        return this.users.stream().filter(user -> user instanceof Student).map(user -> (Student) user).collect(Collectors.toList());
-    }
 
     // Courses
 
@@ -116,20 +108,36 @@ public class Database {
         return this.news;
     }
 
-    public void deleteNewsById(int id) {
-        this.news.removeIf(news -> news.id == id);
+    public void deleteNews(News news) {
+        this.news.remove(news);
+    }
+
+    public News getNewById(int id){
+        return this.news.stream().filter(item -> item.getId() == id).findFirst().orElse(null);
     }
 
     public void updateNews(int id, News newPost) {
         this.news = this.news.stream().map(item -> item.getId() == id ? newPost : item).collect(Collectors.toList());
     }
 
+    // logs
     public List<Log> getLogs() {
         return logs;
     }
 
     public void addLogs(Log log){
         this.logs.add(log);
+    }
+
+
+    // STUDENTS
+    // increease Year of students
+    public void increaseYearOfStudents(){
+        // increasing YEAR
+    }
+
+    public List<Student> getStudents(){
+        return this.users.stream().filter(item -> item instanceof Student).map(item -> (Student)item).toList();
     }
 
 }

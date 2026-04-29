@@ -33,25 +33,7 @@ public class Student extends User implements retakes {
     public void RetakeCourse(){
         System.out.print("gg guys");
     }
-    
-    @Override
-    public boolean showCommands() {
-        Scanner input = new Scanner(System.in);
-        System.out.println("\nMenu");
-        System.out.println("1 View + register for courses");
-        System.out.println("2 View transcript & marks");
-        System.out.println("3 View teacher info");
-        System.out.println("0 Logout");
 
-        int command = input.nextInt();
-        switch (command) {
-            case 1 -> manageRegistration(input);
-            case 2 -> viewTranscript();
-            case 0 -> { return false; }
-            default -> System.out.println("Invalid command");
-        }
-        return true;
-    }
 
     public void registerForCourse(Course c) {
         if (this.totalCredits + c.getCredit() <= 21) {
@@ -131,9 +113,5 @@ public class Student extends User implements retakes {
     public void setGPA(double GPA) {
         this.GPA = GPA;
     }
-
-
-
-
 
 }

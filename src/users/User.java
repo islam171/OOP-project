@@ -5,7 +5,7 @@ import main.UniSystem;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public abstract class User {
+public abstract class User implements Comparable<User> {
     private String username;
     private String password;
     private static int ID = 0;
@@ -43,6 +43,14 @@ public abstract class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public int compareTo(User o) {
+        if (o == null) {
+            throw new NullPointerException("Cannot compare with null");
+        }
+        return Integer.compare(this.getId(), o.getId());
     }
 
 }
