@@ -39,4 +39,8 @@ public class Log {
     public void setAction(String action) {
         this.action = action;
     }
+
+    public String toString(){
+        return "LOG: " + date.toString() + " " + this.getUsername() + " " + this.getAction();
+    }
 }

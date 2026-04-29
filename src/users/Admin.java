@@ -3,13 +3,14 @@ package users;
 
 import main.UniSystem;
 import storage.Database;
+import storage.Log;
 
 import java.util.Scanner;
 
 public class Admin extends User {
 
-    public Admin(String username, String password) {
-        super(username, password);
+    public Admin(String username, String password, UniSystem system) {
+        super(username, password, system);
     }
 
     @Override
@@ -19,6 +20,7 @@ public class Admin extends User {
         System.out.println("showAllUsers: 2");
         System.out.println("Remove user: 3");
         System.out.println("Update user: 4");
+        System.out.println("Show logs: 5");
         System.out.println("Exit: 0");
         System.out.print("Select command: ");
 
@@ -40,6 +42,9 @@ public class Admin extends User {
                 break;
             case 4:
                 this.updateUser();
+                break;
+            case 5:
+                this.showLogs();
                 break;
             default:
                 return false;
@@ -78,7 +83,7 @@ public class Admin extends User {
                 String major = input.next();
                 System.out.print("Enter year: ");
                 int year = input.nextInt();
-                newUser = new Student(name, pass, major, year);
+                newUser = new Student(name, pass, getSystem(), major, year);
             }
             case 2 -> { // Teacher
                 System.out.print("Enter salary: ");
@@ -86,7 +91,7 @@ public class Admin extends User {
                 System.out.print("Enter teacher type (1-Tutor, 2-Professor): ");
                 int type = input.nextInt();
                 TeacherType title = (type == 2) ? TeacherType.PROFESSOR : TeacherType.TUTOR;
-                newUser = new Teacher(name, pass, salary, title);
+                newUser = new Teacher(name, pass, getSystem(), salary, title);
             }
             case 3 -> { // Manager
                 System.out.print("Enter salary: ");
@@ -94,14 +99,14 @@ public class Admin extends User {
                 System.out.print("Enter manager type (1-OR, 2-Finance): ");
                 int type = input.nextInt();
                 ManagerType mType = (type == 2) ? ManagerType.FINANCE : ManagerType.OR;
-                newUser = new Manager(name, pass, salary, mType);
+                newUser = new Manager(name, pass, getSystem(), salary, mType);
             }
             default -> System.out.println("Invalid role!");
         }
 
         // 4. Сохраняем в базу
         if (newUser != null) {
-            database.getUsers().add(newUser);
+            getSystem().addUser(newUser);
             System.out.println("User added successfully: " + newUser);
         }
     }
@@ -109,23 +114,20 @@ public class Admin extends User {
     public void showUsers() {
         System.out.print("\n");
         System.out.print("All Users: \n");
-        Database database = Database.getInstance();
-        for (User user : database.getUsers()) {
+        for (User user : getSystem().getUsers()) {
             System.out.print(user + "\n");
         }
     }
 
     public void removeUser(Scanner input) {
-        Database database = Database.getInstance();
         System.out.print("\n");
         System.out.print("Enter user id: ");
         int id = input.nextInt();
-        database.removeUser(id);
+        getSystem().removeUser(id);
     }
 
 
     public void updateUser(){
-        Database database = Database.getInstance();
         System.out.print("\n");
         Scanner input = new Scanner(System.in);
 
@@ -133,7 +135,7 @@ public class Admin extends User {
         System.out.print("Enter user Id: ");
         int id = input.nextInt();
 
-        User user = database.getUserById(id);
+        User user = getSystem().getUserById(id);
         if (user == null) {
             System.out.print("User is not found");
         }
@@ -211,7 +213,14 @@ public class Admin extends User {
             }
         } while (command != 0);
 
-        database.updateUser(user, req);
+        getSystem().updateUser(user, req);
+    }
+
+    public void showLogs(){
+        System.out.print("System logs: \n");
+        for(Log log : getSystem().getLogs()){
+            System.out.print(log + "\n");
+        }
     }
 
 }
