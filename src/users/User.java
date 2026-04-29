@@ -10,13 +10,10 @@ public abstract class User {
     private String password;
     private static int ID = 0;
     private int id;
-    private UniSystem system;
-
-    public User(String username, String password, UniSystem system) {
+    public User(String username, String password) {
         setId(ID++);
         setPassword(password);
         setUsername(username);
-        this.system = system;
     }
 
     @Override
@@ -50,11 +47,4 @@ public abstract class User {
         this.id = id;
     }
 
-    public UniSystem getSystem() {
-        return system;
-    }
-
-    public void setSystem(UniSystem system) {
-        this.system = system;
-    }
 }

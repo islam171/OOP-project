@@ -41,10 +41,10 @@ public class UniSystem {
 
         Database database = Database.getInstance();
 
-        Admin admin = new Admin("admin", "admin", getInstance());
-        Teacher teacher = new Teacher("islam", "islam", getInstance(),10.0, TeacherType.TUTOR);
-        Student student = new Student("islam1", "islam1", getInstance(),"IS", 2);
-        Manager manager = new Manager("manager", "qwerty", getInstance(),10.0, ManagerType.OR);
+        Admin admin = new Admin("admin", "admin");
+        Teacher teacher = new Teacher("islam", "islam", 10.0, TeacherType.TUTOR);
+        Student student = new Student("islam1", "islam1", "IS", 2);
+        Manager manager = new Manager("manager", "qwerty", 10.0, ManagerType.OR);
         Course course = new Course("Calculus", 6, teacher);
         Course course1 = new Course("PP1", 6, teacher);
 

@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class Admin extends User {
 
-    public Admin(String username, String password, UniSystem system) {
-        super(username, password, system);
+    public Admin(String username, String password) {
+        super(username, password);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class Admin extends User {
                 String major = input.next();
                 System.out.print("Enter year: ");
                 int year = input.nextInt();
-                newUser = new Student(name, pass, getSystem(), major, year);
+                newUser = new Student(name, pass, major, year);
             }
             case 2 -> { // Teacher
                 System.out.print("Enter salary: ");
@@ -91,7 +91,7 @@ public class Admin extends User {
                 System.out.print("Enter teacher type (1-Tutor, 2-Professor): ");
                 int type = input.nextInt();
                 TeacherType title = (type == 2) ? TeacherType.PROFESSOR : TeacherType.TUTOR;
-                newUser = new Teacher(name, pass, getSystem(), salary, title);
+                newUser = new Teacher(name, pass, salary, title);
             }
             case 3 -> { // Manager
                 System.out.print("Enter salary: ");
@@ -99,14 +99,14 @@ public class Admin extends User {
                 System.out.print("Enter manager type (1-OR, 2-Finance): ");
                 int type = input.nextInt();
                 ManagerType mType = (type == 2) ? ManagerType.FINANCE : ManagerType.OR;
-                newUser = new Manager(name, pass, getSystem(), salary, mType);
+                newUser = new Manager(name, pass, salary, mType);
             }
             default -> System.out.println("Invalid role!");
         }
 
         // 4. Сохраняем в базу
         if (newUser != null) {
-            getSystem().addUser(newUser);
+            database.addUser(newUser);
             System.out.println("User added successfully: " + newUser);
         }
     }
@@ -114,16 +114,18 @@ public class Admin extends User {
     public void showUsers() {
         System.out.print("\n");
         System.out.print("All Users: \n");
-        for (User user : getSystem().getUsers()) {
+        Database database = Database.getInstance();
+        for (User user : database.getUsers()) {
             System.out.print(user + "\n");
         }
     }
 
     public void removeUser(Scanner input) {
+        Database database = Database.getInstance();
         System.out.print("\n");
         System.out.print("Enter user id: ");
         int id = input.nextInt();
-        getSystem().removeUser(id);
+        database.removeUser(id);
     }
 
 
@@ -134,8 +136,8 @@ public class Admin extends User {
         // ATTENTION - check while user id is not correct
         System.out.print("Enter user Id: ");
         int id = input.nextInt();
-
-        User user = getSystem().getUserById(id);
+        Database database = Database.getInstance();
+        User user = database.getUserById(id);
         if (user == null) {
             System.out.print("User is not found");
         }
@@ -213,12 +215,13 @@ public class Admin extends User {
             }
         } while (command != 0);
 
-        getSystem().updateUser(user, req);
+        database.updateUser(user, req);
     }
 
     public void showLogs(){
+        Database database = Database.getInstance();
         System.out.print("System logs: \n");
-        for(Log log : getSystem().getLogs()){
+        for(Log log : database.getLogs()){
             System.out.print(log + "\n");
         }
     }

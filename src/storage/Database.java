@@ -116,7 +116,7 @@ public class Database {
         return this.news;
     }
 
-    public void deleteNewById(int id) {
+    public void deleteNewsById(int id) {
         this.news.removeIf(news -> news.id == id);
     }
 
@@ -131,4 +131,5 @@ public class Database {
     public void addLogs(Log log){
         this.logs.add(log);
     }
+
 }

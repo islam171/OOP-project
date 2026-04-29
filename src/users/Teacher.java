@@ -11,8 +11,8 @@ public class Teacher extends Employee {
 
     private TeacherType teacherType;
 
-    public Teacher(String username, String password, UniSystem system, double salary, TeacherType teacherType) {
-        super(username, password, system, salary);
+    public Teacher(String username, String password, double salary, TeacherType teacherType) {
+        super(username, password, salary);
         setTeacherType(teacherType);
     }
 
@@ -45,8 +45,9 @@ public class Teacher extends Employee {
     }
 
     public void viewCourses(){
+        Database database = Database.getInstance();
         System.out.println("Your courses: ");
-        for (Course course : getSystem().getCourses()){
+        for (Course course : database.getCourses()){
             if(course.getInstructor().equals(this)){
                 System.out.println(course);
             }
@@ -54,15 +55,17 @@ public class Teacher extends Employee {
     }
 
     public void viewStudents(){
+        Database database = Database.getInstance();
         System.out.println("Students: ");
-        for(User student : getSystem().getStudents()){
+        for(User student : database.getStudents()){
             System.out.println(student);
         }
     }
 
     public void viewLessons(){
+        Database database = Database.getInstance();
         System.out.print("Lessons: ");
-        for(Lesson lesson : getSystem().getLessons()){
+        for(Lesson lesson : database.getLessons()){
             if(lesson.getCourse().getInstructor().equals(this)){
                 System.out.println(lesson);
             }
