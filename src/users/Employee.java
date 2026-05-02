@@ -14,11 +14,6 @@ public class Employee extends User{
         setSalary(salary);
     }
 
-    @Override
-    public boolean showCommands() {
-        return false;
-    }
-
     public double getSalary() {
         return salary;
     }
@@ -26,6 +21,5 @@ public class Employee extends User{
     public void setSalary(double salary) {
         this.salary = salary;
     }
-
 
 }

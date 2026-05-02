@@ -5,12 +5,13 @@ import main.UniSystem;
 import storage.Database;
 import storage.Log;
 
+import java.util.List;
 import java.util.Scanner;
 
-public class Admin extends User {
+public class Admin extends Employee {
 
-    public Admin(String username, String password) {
-        super(username, password);
+    public Admin(String username, String password, double salary) {
+        super(username, password, salary);
     }
 
     public void addUser(User user) {
@@ -18,119 +19,31 @@ public class Admin extends User {
        database.addUser(user);
     }
 
-    public void showUsers() {
-        System.out.print("\n");
-        System.out.print("All Users: \n");
+    public List<User> getUsers() {
         Database database = Database.getInstance();
-        for (User user : database.getUsers()) {
-            System.out.print(user + "\n");
-        }
+        return database.getUsers();
     }
 
-    public void removeUser(Scanner input) {
+    public boolean deleteUser(int userId) {
         Database database = Database.getInstance();
-        System.out.print("\n");
-        System.out.print("Enter user id: ");
-        int id = input.nextInt();
-        database.removeUser(id);
+        User user = database.getUserById(userId);
+        database.deleteUser(user);
+        return true;
     }
 
-
-    public void updateUser(){
-        System.out.print("\n");
-        Scanner input = new Scanner(System.in);
-
-        // ATTENTION - check while user id is not correct
-        System.out.print("Enter user Id: ");
-        int id = input.nextInt();
+    public void increaseYearOfStudents(){
         Database database = Database.getInstance();
-        User user = database.getUserById(id);
-        if (user == null) {
-            System.out.print("User is not found");
-        }
-
-        System.out.print("\n");
-        System.out.print(user);
-        System.out.print("\n");
-
-        if (user instanceof Admin) {
-            System.out.print("Admin can't change admin");
-            return;
-        }
-
-        Request req = new Request();
-
-        int command;
-        do {
-
-            System.out.print("""     
-                    
-                    Change username: 1
-                    Change password: 2
-                    """);
-
-            if (user instanceof Student) {
-                System.out.print(""" 
-                        Change major: 3
-                        Change year: 4""");
-            } else if (user instanceof Employee) {
-                System.out.print("Change salary: 3\n");
-
-                if (user instanceof Teacher) {
-                    System.out.print("Change teacher type: 4");
-                } else if (user instanceof Manager) {
-                    System.out.print("Change manager type: 4\n");
-                }
-            }
-            System.out.print("Exit to menu: 0\n");
-            System.out.print("Select command: ");
-            command = input.nextInt();
-            System.out.print("\n");
-            switch (command) {
-                case 1 -> {
-                    System.out.print("Enter username: ");
-                    req.username = input.next();
-                }
-                case 2 -> {
-                    System.out.print("Enter password: ");
-                    req.password = input.next();
-                }
-                case 3 -> {
-                    if (user instanceof Student) {
-                        System.out.print("Enter major: ");
-                        req.major = input.next();
-                    } else if (user instanceof Employee) {
-                        System.out.print("Enter salary: ");
-                        req.salary = input.nextDouble();
-                    }
-                }
-                case 4 -> {
-                    if (user instanceof Student) {
-                        System.out.print("Enter year: ");
-                        req.year = input.nextInt();
-                    } else if (user instanceof Teacher) {
-                        System.out.print("Enter salary: ");
-                        // teacher type
-                    } else if (user instanceof Manager) {
-                        System.out.print("Enter salary: ");
-                        // manger type
-                    }
-                }
-                default -> {
-                    break;
-                }
-            }
-        } while (command != 0);
-
-        database.updateUser(user, req);
+        database.increaseYearOfStudents();
     }
 
-    public void showLogs(){
+    public List<Log> viewLogs(){
         Database database = Database.getInstance();
-        System.out.print("System logs: \n");
-        for(Log log : database.getLogs()){
-            System.out.print(log + "\n");
-        }
+        return database.getLogs();
+    }
+
+    @Override
+    public String toString(){
+        return "Admin; " + super.toString();
     }
 
 }

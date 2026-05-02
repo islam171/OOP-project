@@ -33,6 +33,7 @@ public class ResearcherDecorator implements Researcher{
         this.papers.add(paper);
     }
 
+
     @Override
     public void printPapers(PaperComparator comparator) {
 
