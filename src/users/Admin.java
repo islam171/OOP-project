@@ -24,7 +24,7 @@ public class Admin extends Employee {
         return database.getUsers();
     }
 
-    public boolean deleteUser(int userId) {
+    public boolean removeUser(int userId) {
         Database database = Database.getInstance();
         User user = database.getUserById(userId);
         database.deleteUser(user);

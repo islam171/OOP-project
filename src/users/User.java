@@ -1,7 +1,11 @@
 package users;
 
+import academic.Course;
 import main.UniSystem;
+import storage.Database;
 
+import javax.xml.crypto.Data;
+import java.awt.dnd.DropTarget;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -10,6 +14,7 @@ public abstract class User implements Comparable<User> {
     private String password;
     private static int ID = 0;
     private int id;
+
     public User(String username, String password) {
         setId(ID++);
         setPassword(password);
@@ -53,4 +58,25 @@ public abstract class User implements Comparable<User> {
         return Integer.compare(this.getId(), o.getId());
     }
 
+    public boolean login(String password){
+        Database database = Database.getInstance();
+        return database.login(this, password);
+    }
+
+    public void logout(){
+        Database database = Database.getInstance();
+        database.logout();
+    }
+
+    public boolean equals(Object o){
+        if(o == this) return true;
+        if(!(o instanceof User)) return false;
+
+        User u = (User) o;
+        return this.getId() == u.getId();
+    }
+
+    public int hashCode(){
+        return  Objects.hash(id);
+    }
 }

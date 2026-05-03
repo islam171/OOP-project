@@ -2,47 +2,36 @@ package users;
 
 import academic.Course;
 import academic.Lesson;
+import academic.MarkType;
 import main.UniSystem;
 import storage.Database;
 
+import java.util.List;
 import java.util.Scanner;
+import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class Teacher extends Employee {
 
     private TeacherType teacherType;
+
 
     public Teacher(String username, String password, double salary, TeacherType teacherType) {
         super(username, password, salary);
         setTeacherType(teacherType);
     }
 
-
-    public boolean showCommands() {
-        System.out.println("view courses: 1");
-        System.out.println("view students: 2");
-        System.out.println("View transcript: 3");
-        System.out.println("View all lessons: 4");
-        System.out.println("View lesson by ID: 5");
-        System.out.println("Break: 0");
-
-        Scanner input = new Scanner(System.in);
-        int command = input.nextInt();
-        switch (command) {
-            case 0:
-                return false;
-            case 1:
-                viewCourses();
-                break;
-            case 2:
-                viewStudents();
-                break;
-            case 3:
-                viewTranscript();
-            default: return false;
-        }
-        return true;
-
+    public String toString(){
+        return "Teacher: " + super.toString() + "; teacher type: " + this.teacherType;
     }
+
+    public TeacherType getTeacherType() {
+        return teacherType;
+    }
+    public void setTeacherType(TeacherType teacherType) {
+        this.teacherType = teacherType;
+    }
+
 
     public void viewCourses(){
         Database database = Database.getInstance();
@@ -56,9 +45,15 @@ public class Teacher extends Employee {
 
     public void viewStudents(){
         Database database = Database.getInstance();
+        Course course = database.getCourses().stream().filter(item -> item.getInstructor().equals(this)).findFirst().orElse(null);
+        if(course == null){
+            System.out.println("Teacher doesn't enrolled to any course");
+            return;
+        }
         System.out.println("Students: ");
-        for(User student : database.getStudents()){
-            System.out.println(student);
+        List<Student> students = database.getStudents().stream().filter(item -> item.getCourses().contains(course)).toList();
+        for(Student s : students){
+            System.out.println(s);
         }
     }
 
@@ -72,34 +67,24 @@ public class Teacher extends Employee {
         }
     }
 
-    public void putMark(Scanner input){
-
-        System.out.print("Enter student ID: ");
-        int studentId = input.nextInt();
-        System.out.print("Enter lesson ID: ");
-        int lessonId = input.nextInt();
-        System.out.print("Enter attendance (0/1): ");
-        int attendance = input.nextInt();
-        System.out.print("Enter mark: ");
-        int markValue = input.nextInt();
-
-        // логика добавления оценок
-
+    public void putMark(Student student, MarkType markType, double points){
+        Database database = Database.getInstance();
+        Course course = database.getCourses().stream().filter(item -> item.getInstructor().equals(this)).findFirst().orElse(null);
+        if(course != null){
+            database.putMark(course, student, markType, points);
+        }else{
+            throw new RuntimeException("Teacher doesn't enrolled to any course");
+        }
     }
 
-    public void viewTranscript(){
-
+    public void viewStudentInfo(int id){
+        Database database = Database.getInstance();
+        Student student = database.getStudentById(id);
+        if(student != null){
+            System.out.println(student);
+            return;
+        }
+        throw new IllegalArgumentException("There is no student with this id");
     }
 
-    public void rateTeachers(){
-
-    }
-
-    public TeacherType getTeacherType() {
-        return teacherType;
-    }
-
-    public void setTeacherType(TeacherType teacherType) {
-        this.teacherType = teacherType;
-    }
 }

@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 public class UniSystem {
 
     static void main(){
-        
+        Course course = new Course("fsdf", 1, null);
+        if(course.getInstructor() != null){
+            System.out.println("dsdsa");
+        }
     }
 }

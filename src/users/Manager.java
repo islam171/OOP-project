@@ -2,10 +2,8 @@ package users;
 
 import academic.Course;
 import academic.News;
-import main.UniSystem;
+import academic.RegistrationRequest;
 import storage.Database;
-
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,30 +14,60 @@ public class Manager extends Employee {
 
     public Manager(String username, String password, double salary, ManagerType type) {
         super(username, password, salary);
-        setType(type);
+        setManagerType(type);
+    }
+
+    public ManagerType getManagerType() {
+        return type;
+    }
+
+    public void setManagerType(ManagerType type) {
+        this.type = type;
+    }
+
+    public void approveRegister(RegistrationRequest request) {
+        Student student = request.getStudent();
+        boolean ok = student.getCourses().contains(request.getCourse());
+        if(ok) {
+            throw new RuntimeException("Student already have this course");
+        }
+        student.addCourse(request.getCourse());
+        Database database = Database.getInstance();
+        database.removeRequest(request);
+    }
+
+    public void rejectRequest(RegistrationRequest request){
+        Database database = Database.getInstance();
+        database.removeRequest(request);
     }
 
 
-    public void addCourse() {
-
+    public void assignTeacher(Teacher teacher, Course course) {
+        if(course.getInstructor() != null){
+            course.setInstructor(teacher);
+        }
+        throw new RuntimeException("This course already has instructor");
     }
 
-    public void assignTeacher(Scanner input) {
-
+    public void addCourse(Course course) {
+        Database database = new Database();
+        database.addCourse(course);
     }
 
-    public void approveRegister() {
-        System.out.println("Registry complete!");
+    public void removeCourse(Course course){
+        Database database = new Database();
+        database.addCourse(course);
     }
 
-    public void addNews(Scanner input) {
-
+    public void addNews(News news) {
+        Database database = new Database();
+        database.addNews(news);
     }
 
-    public void removeNews(Scanner input) {
-
+    public void removeNews(News news) {
+        Database database = new Database();
+        database.removeNews(news);
     }
-
 
 
     public void viewStudentsByGPA() {
@@ -71,13 +99,12 @@ public class Manager extends Employee {
         }
     }
 
-
-    public ManagerType getType() {
-        return type;
+    public void generateReport(){
+        // todo
     }
 
-    public void setType(ManagerType type) {
-        this.type = type;
+    public void viewTeachers(){
+        // todo
     }
 
 }

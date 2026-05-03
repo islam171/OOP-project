@@ -15,6 +15,7 @@ public class ResearchProject {
     public void addParticipant(Object obj)  {
         if (!(obj instanceof Researcher)) {
             System.out.println("User is not a researcher!");
+            return;
         }
         participants.add((Researcher) obj);
     }
