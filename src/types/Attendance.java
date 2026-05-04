@@ -1,4 +1,4 @@
-package academic;
+package types;
 
 public enum Attendance {
     ATTENDED,

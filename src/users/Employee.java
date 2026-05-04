@@ -1,8 +1,11 @@
 package users;
 
 
+import academic.Message;
 import main.UniSystem;
+import storage.Database;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Employee extends User{
@@ -22,4 +25,17 @@ public class Employee extends User{
         this.salary = salary;
     }
 
+    public void sendMessage(Employee recipient, String text){
+        Database database = Database.getInstance();
+        database.sendMessage(this, recipient, text);
+    }
+
+    public void viewMessages(){
+        Database database = Database.getInstance();
+        List<Message> messages = database.getReceivedMessage(this);
+        System.out.println("Messages:");
+        for(Message m : messages){
+            System.out.println(m);
+        }
+    }
 }

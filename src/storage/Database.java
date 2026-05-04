@@ -1,9 +1,8 @@
 package storage;
 
-import academic.Course;
-import academic.Lesson;
-import academic.News;
+import academic.*;
 import research.ResearchProject;
+import types.MarkType;
 import users.*;
 
 import java.util.ArrayList;
@@ -20,6 +19,13 @@ public class Database {
     private List<ResearchProject> projects = new ArrayList<>();
     private List<News> news = new ArrayList<>();
     private List<Log> logs = new ArrayList<>();
+    private List<Mark> marks = new ArrayList<>();
+    private List<RatingTeacher> ratingTeachers = new ArrayList<>();
+    private List<RegistrationRequest> requests = new ArrayList<>();
+    private List<Message> messages = new ArrayList<>();
+
+    private User user = null;
+
 
     public static Database getInstance() {
         if (instance == null) {
@@ -27,6 +33,23 @@ public class Database {
         }
         return instance;
     }
+
+    // AUTH
+
+    public boolean login(User user, String password) {
+        if (user.getPassword().equals(password)) {
+            this.user = user;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean logout() {
+        if (this.user == null) return false;
+        this.user = null;
+        return true;
+    }
+
 
     // Users
 
@@ -46,21 +69,6 @@ public class Database {
         return this.getUsers().stream().filter(item -> item.getId() == id).findFirst().orElse(null);
     }
 
-    public void updateUser(User user, Request req) {
-        if (req.username != null) user.setUsername(req.username);
-        if (req.password != null) user.setUsername(req.password);
-
-        if (user instanceof Student) {
-            if (req.major != null) ((Student) user).setMajor(req.major);
-        } else if (user instanceof Employee) {
-            if (req.salary != null) ((Employee) user).setSalary(req.salary);
-            if (user instanceof Teacher) {
-                if (req.teacherType != null) ((Teacher) user).setTeacherType(req.teacherType);
-            } else if (user instanceof Manager)
-                if (req.managerType != null) ((Manager) user).setType(req.managerType);
-        }
-    }
-
 
     // Courses
 
@@ -70,6 +78,10 @@ public class Database {
 
     public List<Course> getCourses() {
         return this.courses;
+    }
+
+    public void removeCourse(Course course) {
+        this.courses.remove(course);
     }
 
     // Lessons
@@ -86,6 +98,29 @@ public class Database {
         return this.lessons.stream().filter(item -> item.getLessonsId() == id).findFirst().orElse(null);
     }
 
+    // mark
+    public double getMarkOfStudentByCourse(Student student, Course course) {
+        return this.marks.stream().filter(item -> item.getStudent().equals(student) && item.getCourse().equals(course)).mapToDouble(Mark::getPoints).sum();
+    }
+
+    public List<Mark> getMarksOfStudent(Student student) {
+        return this.marks.stream().filter(item -> item.getStudent().equals(student)).collect(Collectors.toList());
+    }
+
+    public void putMark(Course course, Student student, MarkType markType, double points) {
+        Mark mark = this.marks.stream().filter(item -> item.getStudent().equals(student) && item.getCourse().equals(course) && item.getMarkType() == markType).findFirst().orElse(null);
+        if (mark != null) {
+            mark.setPoints(points);
+            return;
+        }
+        mark = new Mark(student, course, points, markType);
+        this.marks.add(mark);
+    }
+
+    // Teachers
+    public void addTeacherRating(Teacher teacher, Student student, int value) {
+        this.ratingTeachers.add(new RatingTeacher(teacher, student, value));
+    }
 
 
     // Projects
@@ -108,11 +143,11 @@ public class Database {
         return this.news;
     }
 
-    public void deleteNews(News news) {
+    public void removeNews(News news) {
         this.news.remove(news);
     }
 
-    public News getNewById(int id){
+    public News getNewById(int id) {
         return this.news.stream().filter(item -> item.getId() == id).findFirst().orElse(null);
     }
 
@@ -125,19 +160,55 @@ public class Database {
         return logs;
     }
 
-    public void addLogs(Log log){
+    public void addLogs(Log log) {
         this.logs.add(log);
     }
 
 
     // STUDENTS
     // increease Year of students
-    public void increaseYearOfStudents(){
+    public void increaseYearOfStudents() {
         // increasing YEAR
     }
 
-    public List<Student> getStudents(){
-        return this.users.stream().filter(item -> item instanceof Student).map(item -> (Student)item).toList();
+    public List<Student> getStudents() {
+        return this.users.stream().filter(item -> item instanceof Student).map(item -> (Student) item).toList();
     }
 
+    public Student getStudentById(int id) {
+        return this.getStudents().stream().filter(item -> item.getId() == id).findFirst().orElse(null);
+    }
+
+
+    // request
+    public void addRequestForRegistration(Student student, Course course) {
+        this.requests.add(new RegistrationRequest(student, course));
+    }
+
+    public void removeRequest(RegistrationRequest request) {
+        this.requests.remove(request);
+    }
+
+    // message
+    public void sendMessage(User sender, User recipient, String text) {
+        if (sender instanceof Employee || recipient instanceof Employee) {
+            throw new RuntimeException("Only employee can send Message");
+        }
+        this.messages.add(new Message(sender, recipient, text));
+    }
+
+    public List<Message> getSentMessages(User user) {
+        if (user instanceof Employee) {
+            throw new RuntimeException("Only employee can get Message");
+        }
+        return this.messages.stream().filter(item -> item.getSender().equals(user)).toList();
+    }
+
+    public List<Message> getReceivedMessage(User user) {
+        if (user instanceof Employee) {
+            throw new RuntimeException("Only employee can get Message");
+        }
+        return this.messages.stream().filter(item -> item.getRecipient().equals(user)).toList();
+    }
 }
+
