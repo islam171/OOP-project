@@ -1,11 +1,12 @@
 package storage;
 
 import academic.*;
+import exceptions.*;
 import research.ResearchProject;
 import types.MarkType;
 import users.*;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,12 +55,18 @@ public class Database implements Serializable {
 
     // Users
 
-    public void addUser(User user) {
-        this.users.add(user);
+    public void addUser(User user) throws UserExistsException {
+        if (this.users.contains(user)) {
+            throw new UserExistsException(user.getUsername());
+        } else
+            this.users.add(user);
     }
 
-    public void deleteUser(User user) {
+    public void deleteUser(User user) throws UserNotFoundException {
+        if(this.users.contains(user))
         this.users.remove(user);
+        else
+            throw new UserNotFoundException(user, "");
     }
 
     public List<User> getUsers() {
@@ -73,7 +80,9 @@ public class Database implements Serializable {
 
     // Courses
 
-    public void addCourse(Course course) {
+    public void addCourse(Course course) throws CourseExistsException {
+        if (this.courses.contains(course))
+            throw new CourseExistsException("There course already exists");
         this.courses.add(course);
     }
 
@@ -81,14 +90,20 @@ public class Database implements Serializable {
         return this.courses;
     }
 
-    public void removeCourse(Course course) {
+    public void removeCourse(Course course) throws CourseNotFoundException {
+        if(this.courses.contains(course))
         this.courses.remove(course);
+        else throw new CourseNotFoundException("Course " + course.getName() + " is not found");
     }
 
     // Lessons
 
-    public void addLesson(Lesson lesson) {
+    public void addLesson(Lesson lesson) throws LessonExistsException {
+        if(this.lessons.contains(lesson)){
+            throw new LessonExistsException("You can not lesson two times");
+        }
         this.lessons.add(lesson);
+
     }
 
     public List<Lesson> getLessons() {
@@ -101,7 +116,7 @@ public class Database implements Serializable {
 
     // mark
 
-    public List<Mark> getMarks(){
+    public List<Mark> getMarks() {
         return this.marks;
     }
 
@@ -125,18 +140,33 @@ public class Database implements Serializable {
     }
 
     // Teachers
-    public void addTeacherRating(Teacher teacher, Student student, int value) {
+    public void addTeacherRating(Teacher teacher, Student student, int value) throws RatingTeacherException {
+        if (teacher == null || student == null) {
+            throw new IllegalArgumentException("Teacher or student cannot be null");
+        }
+
+
+        RatingTeacher ratingTeacher = this.ratingTeachers.stream().filter(item -> item.getStudent().equals(student) && item.getTeacher().equals(teacher)).findFirst().orElse(null);
+        if(ratingTeacher != null){
+            throw new RatingTeacherException(student.getUsername(), teacher.getUsername(), "");
+        }
         this.ratingTeachers.add(new RatingTeacher(teacher, student, value));
     }
 
-    public List<Teacher> getTeachers(){
+    public List<Teacher> getTeachers() {
         return this.users.stream().filter(item -> item instanceof Teacher).map(item -> (Teacher) item).toList();
     }
 
 
     // Projects
 
-    public void addProject(ResearchProject project) {
+    public void addProject(ResearchProject project) throws ProjectExistsException {
+        if (project == null) {
+            throw new IllegalArgumentException("Project cannot be null");
+        }
+
+        if(this.projects.contains(project))
+            throw new ProjectExistsException("Project" + project.getTopic() + " already exists");
         this.projects.add(project);
     }
 
@@ -146,7 +176,14 @@ public class Database implements Serializable {
 
 
     // NEWS
-    public void addNews(News news) {
+    public void addNews(News news) throws NewsExistsException {
+        if (news == null) {
+            throw new IllegalArgumentException("News cannot be null");
+        }
+
+        if(this.news.contains(news)){
+            throw new NewsExistsException("News " + news.getTitle() + " with id: " + news.getId() + " already exists");
+        }
         this.news.add(news);
     }
 
@@ -179,7 +216,7 @@ public class Database implements Serializable {
     // STUDENTS
     // increease Year of students
     public void increaseYearOfStudents() {
-        // increasing YEAR
+        getStudents().stream().map(item -> (Student)item).forEach(Student::increaseYearOfStudy);
     }
 
     public List<Student> getStudents() {
@@ -200,26 +237,45 @@ public class Database implements Serializable {
         this.requests.remove(request);
     }
 
+
     // message
-    public void sendMessage(User sender, User recipient, String text) {
+    public void sendMessage(User sender, User recipient, String text) throws PermissionException {
         if (sender instanceof Employee || recipient instanceof Employee) {
-            throw new RuntimeException("Only employee can send Message");
+            throw new PermissionException("Only employee can send Message");
         }
         this.messages.add(new Message(sender, recipient, text));
     }
 
-    public List<Message> getSentMessages(User user) {
+    public List<Message> getSentMessages(User user) throws PermissionException {
         if (user instanceof Employee) {
-            throw new RuntimeException("Only employee can get Message");
+            throw new PermissionException("Only employee can get Message");
         }
         return this.messages.stream().filter(item -> item.getSender().equals(user)).toList();
     }
 
-    public List<Message> getReceivedMessage(User user) {
+    public List<Message> getReceivedMessage(User user) throws PermissionException {
         if (user instanceof Employee) {
-            throw new RuntimeException("Only employee can get Message");
+            throw new PermissionException("Only employee can get Message");
         }
         return this.messages.stream().filter(item -> item.getRecipient().equals(user)).toList();
+    }
+
+
+    // SAVING DATA
+    public void loadData() throws IOException, ClassNotFoundException {
+        FileInputStream inputStream = new FileInputStream("C:\\\\Users\\\\Islam\\\\Documents\\\\KBTU\\\\OOP-project\\\\data.ser");
+        ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+
+        instance = (Database) objectInputStream.readObject();
+    }
+
+    public void save() throws IOException {
+        FileOutputStream outputStream = new FileOutputStream("C:\\Users\\Islam\\Documents\\KBTU\\OOP-project\\data.ser");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        Database database = Database.getInstance();
+
+        objectOutputStream.writeObject(database);
+        objectOutputStream.close();
     }
 }
 

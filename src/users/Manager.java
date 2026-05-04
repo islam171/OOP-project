@@ -4,10 +4,12 @@ import academic.Course;
 import academic.Mark;
 import academic.News;
 import academic.RegistrationRequest;
+import exceptions.CourseExistsException;
+import exceptions.CourseNotFoundException;
+import exceptions.NewsExistsException;
 import storage.Database;
 import types.ManagerType;
 
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,15 +34,19 @@ public class Manager extends Employee {
 
     public void addCourse(Course course) {
         Database database = new Database();
-        database.addCourse(course);
+        try {
+            database.addCourse(course);
+        }catch (CourseExistsException e){
+            throw new RuntimeException(e);
+        }
     }
 
-    public void removeCourse(Course course) {
+    public void removeCourse(Course course) throws CourseNotFoundException {
         Database database = new Database();
-        database.addCourse(course);
+        database.removeCourse(course);
     }
 
-    public void addNews(News news) {
+    public void addNews(News news) throws NewsExistsException {
         Database database = new Database();
         database.addNews(news);
     }
@@ -50,12 +56,8 @@ public class Manager extends Employee {
         database.removeNews(news);
     }
 
-    public void approveRegistration(RegistrationRequest request) {
+    public void approveRegistration(RegistrationRequest request) throws CourseExistsException {
         Student student = request.getStudent();
-        boolean ok = student.getCourses().contains(request.getCourse());
-        if (ok) {
-            throw new RuntimeException("Student already have this course");
-        }
         student.addCourse(request.getCourse());
         Database database = Database.getInstance();
         database.removeRequest(request);

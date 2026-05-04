@@ -14,4 +14,16 @@ public class RatingTeacher implements Serializable {
         this.student = student;
     }
 
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public int getRating() {
+        return rating;
+    }
 }

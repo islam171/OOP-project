@@ -1,5 +1,7 @@
 package users;
 
+import exceptions.CourseExistsException;
+import exceptions.RatingTeacherException;
 import types.Attendance;
 import academic.Course;
 import academic.Lesson;
@@ -56,7 +58,7 @@ public class Student extends User implements retakes {
         System.out.println("GPA: " + GPA + " | Fails: " + failsCount);
     }
 
-    public void rateTeacher(Teacher teacher, int rating) {
+    public void rateTeacher(Teacher teacher, int rating) throws RatingTeacherException {
         if (rating < 0 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }
@@ -119,6 +121,10 @@ public class Student extends User implements retakes {
         this.yearOfStudy = yearOfStudy;
     }
 
+    public void increaseYearOfStudy() {
+        this.setYearOfStudy(this.getYearOfStudy() + 1);
+    }
+
     public String getSpecialty() {
         return specialty;
     }
@@ -131,10 +137,10 @@ public class Student extends User implements retakes {
         return this.courses;
     }
 
-    public void addCourse(Course course){
-        if(!this.courses.contains(course))
-        this.courses.add(course);
+    public void addCourse(Course course) throws CourseExistsException {
+        if (!this.courses.contains(course))
+            this.courses.add(course);
         else
-            throw new RuntimeException("Student can't be enrolled one course two times");
+            throw new CourseExistsException("Student already has this course");
     }
 }

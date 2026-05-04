@@ -2,6 +2,7 @@ package users;
 
 
 import academic.Message;
+import exceptions.PermissionException;
 import main.UniSystem;
 import storage.Database;
 
@@ -25,12 +26,12 @@ public class Employee extends User{
         this.salary = salary;
     }
 
-    public void sendMessage(Employee recipient, String text){
+    public void sendMessage(Employee recipient, String text) throws PermissionException {
         Database database = Database.getInstance();
         database.sendMessage(this, recipient, text);
     }
 
-    public void viewMessages(){
+    public void viewMessages() throws PermissionException {
         Database database = Database.getInstance();
         List<Message> messages = database.getReceivedMessage(this);
         System.out.println("Messages:");
