@@ -2,9 +2,10 @@ package storage;
 
 import users.User;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Log {
+public class Log implements Serializable  {
 
     private String username;
     private Date date;

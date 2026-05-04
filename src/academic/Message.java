@@ -2,7 +2,9 @@ package academic;
 
 import users.User;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
 
     private User sender;
     private User recipient;

@@ -2,7 +2,9 @@ package academic;
 
 import users.Student;
 
-public class RegistrationRequest {
+import java.io.Serializable;
+
+public class RegistrationRequest implements Serializable {
     private Student student;
     private Course course;
 

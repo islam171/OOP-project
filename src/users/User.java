@@ -6,10 +6,11 @@ import storage.Database;
 
 import javax.xml.crypto.Data;
 import java.awt.dnd.DropTarget;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public abstract class User implements Comparable<User> {
+public abstract class User implements Comparable<User>, Serializable {
     private String username;
     private String password;
     private static int ID = 0;

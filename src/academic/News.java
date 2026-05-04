@@ -1,8 +1,9 @@
 package academic;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class News {
+public class News implements Serializable {
    private static int ID = 0;
 
     public int id;

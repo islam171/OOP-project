@@ -132,6 +132,9 @@ public class Student extends User implements retakes {
     }
 
     public void addCourse(Course course){
+        if(!this.courses.contains(course))
         this.courses.add(course);
+        else
+            throw new RuntimeException("Student can't be enrolled one course two times");
     }
 }

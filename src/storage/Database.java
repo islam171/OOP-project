@@ -5,11 +5,12 @@ import research.ResearchProject;
 import types.MarkType;
 import users.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Database {
+public class Database implements Serializable {
 
     private static Database instance;
 
@@ -99,6 +100,11 @@ public class Database {
     }
 
     // mark
+
+    public List<Mark> getMarks(){
+        return this.marks;
+    }
+
     public double getMarkOfStudentByCourse(Student student, Course course) {
         return this.marks.stream().filter(item -> item.getStudent().equals(student) && item.getCourse().equals(course)).mapToDouble(Mark::getPoints).sum();
     }
@@ -106,6 +112,7 @@ public class Database {
     public List<Mark> getMarksOfStudent(Student student) {
         return this.marks.stream().filter(item -> item.getStudent().equals(student)).collect(Collectors.toList());
     }
+
 
     public void putMark(Course course, Student student, MarkType markType, double points) {
         Mark mark = this.marks.stream().filter(item -> item.getStudent().equals(student) && item.getCourse().equals(course) && item.getMarkType() == markType).findFirst().orElse(null);
@@ -120,6 +127,10 @@ public class Database {
     // Teachers
     public void addTeacherRating(Teacher teacher, Student student, int value) {
         this.ratingTeachers.add(new RatingTeacher(teacher, student, value));
+    }
+
+    public List<Teacher> getTeachers(){
+        return this.users.stream().filter(item -> item instanceof Teacher).map(item -> (Teacher) item).toList();
     }
 
 
