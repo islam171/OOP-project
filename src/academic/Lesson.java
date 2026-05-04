@@ -1,6 +1,8 @@
 package academic;
 
 
+import types.Attendance;
+import types.LessonType;
 import users.Student;
 
 import java.time.LocalDate;

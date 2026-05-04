@@ -1,26 +1,17 @@
 package main;
 
 import academic.Course;
-import academic.Lesson;
-import storage.Database;
-import storage.Log;
-import users.ManagerType;
-import academic.News;
-import research.ResearchProject;
-import research.Researcher;
+import research.PaperComparatorByCitation;
 import research.ResearcherDecorator;
-import users.*;
-
-import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Collectors;
+import types.TeacherType;
+import users.Teacher;
 
 public class UniSystem {
 
     static void main(){
-        Course course = new Course("fsdf", 1, null);
-        if(course.getInstructor() != null){
-            System.out.println("dsdsa");
-        }
+
+        Teacher teacher = new Teacher("islam", "ds", 200000.0, TeacherType.LECTOR);
+        ResearcherDecorator researcher = new ResearcherDecorator(teacher);
+        researcher.printPapers(new PaperComparatorByCitation());
     }
 }

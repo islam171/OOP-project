@@ -1,16 +1,12 @@
 package users;
 
-import academic.Attendance;
-import main.UniSystem;
+import types.Attendance;
 import academic.Course;
 import academic.Lesson;
 import academic.Mark;
 import storage.Database;
 
-import javax.xml.crypto.Data;
 import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
 import java.util.Vector;
 
 interface retakes {

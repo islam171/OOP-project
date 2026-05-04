@@ -4,8 +4,9 @@ import academic.Course;
 import academic.News;
 import academic.RegistrationRequest;
 import storage.Database;
+import types.ManagerType;
+
 import java.util.List;
-import java.util.Scanner;
 
 public class Manager extends Employee {
 

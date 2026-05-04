@@ -2,6 +2,7 @@ package storage;
 
 import academic.*;
 import research.ResearchProject;
+import types.MarkType;
 import users.*;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class Database {
     private List<Mark> marks = new ArrayList<>();
     private List<RatingTeacher> ratingTeachers = new ArrayList<>();
     private List<RegistrationRequest> requests = new ArrayList<>();
+    private List<Message> messages = new ArrayList<>();
 
     private User user = null;
 
@@ -78,7 +80,7 @@ public class Database {
         return this.courses;
     }
 
-    public void removeCourse(Course course){
+    public void removeCourse(Course course) {
         this.courses.remove(course);
     }
 
@@ -183,8 +185,30 @@ public class Database {
         this.requests.add(new RegistrationRequest(student, course));
     }
 
-    public void removeRequest(RegistrationRequest request){
+    public void removeRequest(RegistrationRequest request) {
         this.requests.remove(request);
+    }
+
+    // message
+    public void sendMessage(User sender, User recipient, String text) {
+        if (sender instanceof Employee || recipient instanceof Employee) {
+            throw new RuntimeException("Only employee can send Message");
+        }
+        this.messages.add(new Message(sender, recipient, text));
+    }
+
+    public List<Message> getSentMessages(User user) {
+        if (user instanceof Employee) {
+            throw new RuntimeException("Only employee can get Message");
+        }
+        return this.messages.stream().filter(item -> item.getSender().equals(user)).toList();
+    }
+
+    public List<Message> getReceivedMessage(User user) {
+        if (user instanceof Employee) {
+            throw new RuntimeException("Only employee can get Message");
+        }
+        return this.messages.stream().filter(item -> item.getRecipient().equals(user)).toList();
     }
 }
 

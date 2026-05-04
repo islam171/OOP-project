@@ -1,4 +1,4 @@
-package academic;
+package types;
 
 public enum MarkType {
     FIRST__ATTESTATION,

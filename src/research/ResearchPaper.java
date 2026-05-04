@@ -9,17 +9,15 @@ public class ResearchPaper {
     private LocalDate date;
     private int citation;
 
-    public ResearchPaper(String name, int pages, LocalDate date, int citation){
+    public ResearchPaper(String name, int pages, LocalDate date){
         this.name = name;
         this.pages = pages;
         this.date = date;
-        this.citation = citation;
     }
 
     public String getName(){
         return this.name;
     }
-
 
     public int getPages(){
         return this.pages;
@@ -37,5 +35,7 @@ public class ResearchPaper {
         this.citation += 1;
     }
 
-
+    public String toString(){
+        return "Project: " + this.getName() + "; pages: " + this.getPages() + "; citation: " + this.getCitation() + "; " + this.getDate();
+    }
 }

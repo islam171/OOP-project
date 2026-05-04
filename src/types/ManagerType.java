@@ -1,4 +1,4 @@
-package users;
+package types;
 
 public enum ManagerType {
     HR(1),

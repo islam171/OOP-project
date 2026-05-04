@@ -2,14 +2,11 @@ package users;
 
 import academic.Course;
 import academic.Lesson;
-import academic.MarkType;
-import main.UniSystem;
+import types.MarkType;
 import storage.Database;
+import types.TeacherType;
 
 import java.util.List;
-import java.util.Scanner;
-import java.util.Vector;
-import java.util.stream.Collectors;
 
 public class Teacher extends Employee {
 

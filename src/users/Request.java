@@ -1,5 +1,8 @@
 package users;
 
+import types.ManagerType;
+import types.TeacherType;
+
 public class Request {
     public String username = null;
     public String password = null;

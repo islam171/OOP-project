@@ -1,5 +1,6 @@
 package academic;
 
+import types.MarkType;
 import users.Student;
 
 public class Mark {
