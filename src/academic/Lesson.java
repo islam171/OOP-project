@@ -5,9 +5,10 @@ import types.Attendance;
 import types.LessonType;
 import users.Student;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Lesson {
+public class Lesson implements Serializable {
     private Attendance attendance;
     private Mark mark;
     private LocalDate date;

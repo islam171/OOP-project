@@ -1,6 +1,8 @@
 package users;
 
-public class RatingTeacher {
+import java.io.Serializable;
+
+public class RatingTeacher implements Serializable {
 
     private Teacher teacher;
     private Student student;
@@ -12,4 +14,16 @@ public class RatingTeacher {
         this.student = student;
     }
 
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public int getRating() {
+        return rating;
+    }
 }

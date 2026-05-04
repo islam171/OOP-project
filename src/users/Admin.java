@@ -1,6 +1,8 @@
 package users;
 
 
+import exceptions.UserExistsException;
+import exceptions.UserNotFoundException;
 import main.UniSystem;
 import storage.Database;
 import storage.Log;
@@ -14,9 +16,9 @@ public class Admin extends Employee {
         super(username, password, salary);
     }
 
-    public void addUser(User user) {
+    public void addUser(User user) throws UserExistsException {
         Database database= Database.getInstance();
-       database.addUser(user);
+        database.addUser(user);
     }
 
     public List<User> getUsers() {
@@ -24,11 +26,10 @@ public class Admin extends Employee {
         return database.getUsers();
     }
 
-    public boolean removeUser(int userId) {
+    public void removeUser(int userId) throws UserNotFoundException {
         Database database = Database.getInstance();
         User user = database.getUserById(userId);
         database.deleteUser(user);
-        return true;
     }
 
     public void increaseYearOfStudents(){

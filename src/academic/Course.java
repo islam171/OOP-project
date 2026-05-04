@@ -1,9 +1,11 @@
 package academic;
 
 import users.Teacher;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Course {
+public class Course implements Serializable {
     private String name;
     private int credit;
     private Teacher instructor;
