@@ -19,10 +19,11 @@ public class UniSystem {
     static void main() throws IOException, ClassNotFoundException {
 
         Teacher teacher = new Teacher("islam", "ds", 200000.0, TeacherType.LECTOR);
+
         Student student = new Student("Hello", "hello", "IS", 2);
         Student student1 = new Student("Student1", "student1", "IS", 2);
         Student student2 = new Student("Student2", "student2", "IS", 2);
-        Course course1 = new Course("PP2", 5);
+        Course course1 = new Course("PP2", 5, teacher);
         Manager manager = new Manager("idfsf", "fdsfds", 221423.0, ManagerType.HR);
         Database database = Database.getInstance();
 

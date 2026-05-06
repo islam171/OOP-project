@@ -73,11 +73,10 @@ public class Teacher extends Employee {
                 return item.getInstructor().equals(this);
             else return false;
         }).findFirst().orElse(null);
-
         if (course != null) {
             database.putMark(course, student, markType, points);
         } else {
-            throw new TeacherException(this.getUsername(), " is not enrolled to any courses");
+           throw new TeacherException(this.getUsername(), " is not enrolled to any courses");
         }
     }
 

@@ -114,7 +114,7 @@ public class Manager extends Employee {
         for(Map.Entry<Course, List<Mark>> c : collect.entrySet()){
             System.out.print("Course: " + c.getKey().getName());
             double marksByCourse = c.getValue().stream().collect(Collectors.groupingBy(Mark::getStudent, Collectors.summingDouble(Mark::getPoints))).values().stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-            System.out.println("AVG:" + marksByCourse);
+            System.out.println(" AVG:" + marksByCourse);
         }
     }
 
