@@ -32,7 +32,7 @@ public class Student extends User implements retakes {
     }
 
     public void retakeCourse() {
-        System.out.print("gg guys");
+        System.out.print("Retake!");
     }
 
     public void registerForCourse(Course c) {

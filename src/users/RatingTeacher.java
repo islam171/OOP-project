@@ -14,7 +14,6 @@ public class RatingTeacher implements Serializable {
         this.student = student;
     }
 
-
     public Teacher getTeacher() {
         return teacher;
     }

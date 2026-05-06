@@ -145,11 +145,15 @@ public class Database implements Serializable {
             throw new IllegalArgumentException("Teacher or student cannot be null");
         }
 
+        else if (student.getCourses().stream().noneMatch(c -> c.getInstructor().equals(teacher))) {
+            throw new RatingTeacherException();
+        }
 
         RatingTeacher ratingTeacher = this.ratingTeachers.stream().filter(item -> item.getStudent().equals(student) && item.getTeacher().equals(teacher)).findFirst().orElse(null);
         if(ratingTeacher != null){
             throw new RatingTeacherException(student.getUsername(), teacher.getUsername(), "");
         }
+
         this.ratingTeachers.add(new RatingTeacher(teacher, student, value));
     }
 

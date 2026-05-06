@@ -7,6 +7,7 @@ import users.Student;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Lesson implements Serializable {
     private Attendance attendance;
@@ -26,8 +27,24 @@ public class Lesson implements Serializable {
         this.lessonType = lessonType;
     }
 
+    @Override
     public String toString(){
         return "Lessons, ";
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o == this) return true;
+        if(!(o instanceof Course)) return false;
+
+        Lesson l = (Lesson) o;
+        return this.getLessonsId() == l.getLessonsId();
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getLessonsId());
     }
 
     public Attendance getAttendance() {
