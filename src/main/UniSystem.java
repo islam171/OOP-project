@@ -2,6 +2,7 @@ package main;
 
 import academic.Course;
 import exceptions.CourseExistsException;
+import exceptions.MarkWrongException;
 import exceptions.TeacherException;
 import exceptions.UserExistsException;
 import storage.Database;
@@ -53,6 +54,8 @@ public class UniSystem {
         } catch (CourseExistsException e) {
             System.out.println("That course already exists");
         } catch (UserExistsException | TeacherException e) {
+            System.out.println(e.getMessage());
+        } catch(MarkWrongException e){
             System.out.println(e.getMessage());
         }
     }

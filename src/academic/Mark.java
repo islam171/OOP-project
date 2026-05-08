@@ -1,5 +1,6 @@
 package academic;
 
+import exceptions.MarkWrongException;
 import types.MarkType;
 import users.Student;
 
@@ -12,7 +13,7 @@ public class Mark implements Serializable {
     private Student student;
     private MarkType markType;
 
-    public Mark(Student student, Course course, double points, MarkType markType) {
+    public Mark(Student student, Course course, double points, MarkType markType) throws MarkWrongException {
         setCourse(course);
         setStudent(student);
         setPoints(points);
@@ -39,7 +40,10 @@ public class Mark implements Serializable {
         return points;
     }
 
-    public void setPoints(double points) {
+    public void setPoints(double points) throws MarkWrongException {
+        if(points < 0){
+            throw new MarkWrongException("");
+        }
         this.points = points;
     }
 

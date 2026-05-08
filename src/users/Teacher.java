@@ -2,6 +2,7 @@ package users;
 
 import academic.Course;
 import academic.Lesson;
+import exceptions.MarkWrongException;
 import exceptions.TeacherException;
 import types.MarkType;
 import storage.Database;
@@ -66,7 +67,7 @@ public class Teacher extends Employee {
         }
     }
 
-    public void putMark(Student student, MarkType markType, double points) throws TeacherException {
+    public void putMark(Student student, MarkType markType, double points) throws TeacherException, MarkWrongException {
         Database database = Database.getInstance();
         Course course = database.getCourses().stream().filter(item -> {
             if (item.getInstructor() != null)
