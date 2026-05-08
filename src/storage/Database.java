@@ -132,8 +132,7 @@ public class Database implements Serializable {
     public void putMark(Course course, Student student, MarkType markType, double points) throws MarkWrongException {
         Mark mark = this.marks.stream().filter(item -> item.getStudent().equals(student) && item.getCourse().equals(course) && item.getMarkType() == markType).findFirst().orElse(null);
         if (mark != null) {
-            mark.setPoints(points);
-            return;
+            throw new MarkWrongException("Impossible to change the mark");
         }
         mark = new Mark(student, course, points, markType);
         this.marks.add(mark);

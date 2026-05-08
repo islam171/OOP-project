@@ -40,7 +40,7 @@ public class Mark implements Serializable {
         return points;
     }
 
-    public void setPoints(double points) throws MarkWrongException {
+    private void setPoints(double points) throws MarkWrongException {
         if(points < 0){
             throw new MarkWrongException("");
         }
