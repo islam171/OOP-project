@@ -11,11 +11,8 @@ import storage.Database;
 import java.util.List;
 import java.util.Vector;
 
-interface retakes {
-    void retakeCourse();
-}
 
-public class Student extends User implements retakes {
+public class Student extends User implements Retakes {
 
     private int yearOfStudy;
     private String major;

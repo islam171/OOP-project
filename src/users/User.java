@@ -59,16 +59,6 @@ public abstract class User implements Comparable<User>, Serializable {
         return Integer.compare(this.getId(), o.getId());
     }
 
-    public boolean login(String password){
-        Database database = Database.getInstance();
-        return database.login(this, password);
-    }
-
-    public void logout(){
-        Database database = Database.getInstance();
-        database.logout();
-    }
-
     public boolean equals(Object o){
         if(o == this) return true;
         if(!(o instanceof User)) return false;

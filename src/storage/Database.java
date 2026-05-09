@@ -38,18 +38,27 @@ public class Database implements Serializable {
 
     // AUTH
 
-    public boolean login(User user, String password) {
-        if (user.getPassword().equals(password)) {
-            this.user = user;
-            return true;
+    public void login(User user, String password) throws AuthWrongPassword {
+
+        if (!user.getPassword().equals(password)) {
+            throw new AuthWrongPassword();
         }
-        return false;
+        this.user = user;
+
     }
 
     public boolean logout() {
         if (this.user == null) return false;
         this.user = null;
         return true;
+    }
+
+    public User getUser(){
+        return this.user;
+    }
+
+    public User getUserByUsername(String username){
+        return this.users.stream().filter(item -> item.getUsername().equals(username)).findFirst().orElse(null);
     }
 
 
@@ -129,11 +138,10 @@ public class Database implements Serializable {
     }
 
 
-    public void putMark(Course course, Student student, MarkType markType, double points) {
+    public void putMark(Course course, Student student, MarkType markType, double points) throws MarkWrongException {
         Mark mark = this.marks.stream().filter(item -> item.getStudent().equals(student) && item.getCourse().equals(course) && item.getMarkType() == markType).findFirst().orElse(null);
         if (mark != null) {
-            mark.setPoints(points);
-            return;
+            throw new MarkWrongException("Impossible to change the mark");
         }
         mark = new Mark(student, course, points, markType);
         this.marks.add(mark);
