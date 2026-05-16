@@ -3,10 +3,14 @@ package menus;
 import academic.Course;
 import academic.Mark;
 import academic.News;
+import academic.RegistrationRequest;
+import exceptions.CourseExistsException;
 import exceptions.CourseNotFoundException;
 import exceptions.NewsExistsException;
 import storage.Database;
 import users.Manager;
+import users.Student;
+import users.Teacher;
 
 import java.util.List;
 import java.util.Scanner;
@@ -20,7 +24,7 @@ public class ManagerMenu {
 
     public void menu() {
         Scanner input = new Scanner(System.in);
-        Database database = new Database();
+        Database database = Database.getInstance();
         while(true) {
             String s = """
                     StudentMenu
@@ -82,7 +86,52 @@ public class ManagerMenu {
                     News toDeleteNews = database.getNewById(id);
                     manager.removeNews(toDeleteNews);
                     break;
-
+                case "5":
+                    System.out.print("enter id of the Student: ");
+                    int studId = input.nextInt();
+                    Student stud = database.getStudentById(studId);
+                    System.out.print("enter id of the course: ");
+                    int courseId = input.nextInt();
+                    Course courseRegistry = database.getCourses().stream().filter(item -> item.getId() == courseId).findFirst().orElse(null);
+                    try {
+                        manager.approveRegistration(new RegistrationRequest(stud, courseRegistry));
+                    } catch (CourseExistsException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "6":
+                    System.out.print("enter id of the Student: ");
+                    int studIdToDelete = input.nextInt();
+                    Student studToDelete = database.getStudentById(studIdToDelete);
+                    System.out.print("enter id of the course: ");
+                    int courseIdToDelete = input.nextInt();
+                    Course courseRegistryToDelete = database.getCourses().stream().filter(item -> item.getId() == courseIdToDelete).findFirst().orElse(null);
+                    manager.rejectRegistration(new RegistrationRequest(studToDelete, courseRegistryToDelete));
+                    break;
+                case "7":
+                    System.out.print("enter id of the teacher: ");
+                    int idTeacher = input.nextInt();
+                    Teacher teacher = database.getTeachers().stream().filter(item -> item.getId() == idTeacher).findFirst().orElse(null);
+                    System.out.print("enter id of the course");
+                    int idCourse = input.nextInt();
+                    Course assignCourse = database.getCourses().stream().filter(item -> item.getId() == idCourse).findFirst().orElse(null);
+                    assert assignCourse != null;
+                    manager.assignTeacher(teacher, assignCourse);
+                    break;
+                case "8":
+                    manager.viewStudentsByGPA();
+                    break;
+                case "9":
+                    manager.viewStudentsByName();
+                    break;
+                case "10":
+                    manager.generateReport();
+                case "11":
+                    manager.viewTeachers();
+                case "0":
+                    return;
+                default:
+                    System.out.println("incorrect comm");
             }
     }
 }

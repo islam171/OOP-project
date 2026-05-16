@@ -47,12 +47,12 @@ public class Manager extends Employee {
     }
 
     public void addNews(News news) throws NewsExistsException {
-        Database database = new Database();
+        Database database = Database.getInstance();
         database.addNews(news);
     }
 
     public void removeNews(News news) {
-        Database database = new Database();
+        Database database = Database.getInstance();
         database.removeNews(news);
     }
 
@@ -60,7 +60,7 @@ public class Manager extends Employee {
         Student student = request.getStudent();
         student.addCourse(request.getCourse());
         Database database = Database.getInstance();
-        database.removeRequest(request);
+        database.addRequestForRegistration(student, request.getCourse());
     }
 
     public void rejectRegistration(RegistrationRequest request) {
