@@ -33,7 +33,7 @@ public class MainMenu {
                 Database database = Database.getInstance();
                 User user = database.getUser();
                 if (user == null) {
-                    System.out.print("Something wsa wrong, Please try again\n");
+                    System.out.print("Something went wrong, Please try again\n");
                     continue;
                 }
                 if(user instanceof Admin) {
