@@ -44,7 +44,6 @@ public class Database implements Serializable {
             throw new AuthWrongPassword();
         }
         this.user = user;
-
     }
 
     public boolean logout() {
@@ -72,8 +71,8 @@ public class Database implements Serializable {
     }
 
     public void deleteUser(User user) throws UserNotFoundException {
-        if(this.users.contains(user))
-        this.users.remove(user);
+        if(user != null && this.users.contains(user))
+            this.users.remove(user);
         else
             throw new UserNotFoundException(user, "");
     }
@@ -167,6 +166,11 @@ public class Database implements Serializable {
 
     public List<Teacher> getTeachers() {
         return this.users.stream().filter(item -> item instanceof Teacher).map(item -> (Teacher) item).toList();
+    }
+
+    // manager
+    public List<Manager> getManagers(){
+        return this.users.stream().filter(item -> item instanceof Manager).map(item -> (Manager) item).toList();
     }
 
 
