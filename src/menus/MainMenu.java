@@ -54,6 +54,9 @@ public class MainMenu {
                 else if(user instanceof Manager) {
                     ManagerMenu managerMenu = new ManagerMenu((Manager) user);
                     managerMenu.menu();
+                }else if (user instanceof Student){
+                    StudentMenu studentMenu = new StudentMenu((Student) user);
+                    studentMenu.menu();
                 }
             } else if (command.equals("2")) {
                 System.out.println("Bye\n");

@@ -98,6 +98,7 @@ public class Database implements Serializable {
         return this.courses;
     }
 
+
     public void removeCourse(Course course) throws CourseNotFoundException {
         if(this.courses.contains(course))
         this.courses.remove(course);
@@ -253,6 +254,13 @@ public class Database implements Serializable {
         this.requests.remove(request);
     }
 
+    public List<RegistrationRequest> getRequests(){
+        return this.requests;
+    }
+
+    public RegistrationRequest getRequestById(int requestId) {
+        return this.requests.stream().filter(item -> item.getId() == requestId).findFirst().orElse(null);
+    }
 
     // message
     public void sendMessage(User sender, User recipient, String text) throws PermissionException {

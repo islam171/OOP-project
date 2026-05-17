@@ -3,6 +3,7 @@ package menus;
 import academic.Course;
 import academic.Mark;
 import storage.Database;
+import storage.Table;
 import users.Student;
 import users.Teacher;
 
@@ -19,6 +20,7 @@ public class StudentMenu {
 
     public void menu() {
         Scanner input = new Scanner(System.in);
+        Database database = Database.getInstance();
 
         while (true) {
             String s = """
@@ -57,14 +59,31 @@ public class StudentMenu {
                     student.viewTranscript();
                     break;
                 case "4":
-                    System.out.print("enter course name: ");
-                    String name = input.nextLine();
+                    while(true){
 
-                    System.out.print("enter credits: ");
-                    int credit = Integer.parseInt(input.nextLine());
+                        List<Course> courses = database.getCourses();
 
-                    Course course = new Course(name, credit);
-                    student.registerForCourse(course);
+                        try {
+                            Table.printTable(courses);
+
+                        } catch (IllegalAccessException e) {
+                            System.out.print(e);
+                        }
+
+                        System.out.print("enter course id: ");
+                        int courseId = input.nextInt();
+
+                        Course course = database.getCourses().stream().filter(item -> item.getId() == courseId).findFirst().orElse(null);
+                        if(course == null){
+                            System.out.print("Course not found, try again");
+                            continue;
+                        }
+
+                        student.registerForCourse(course);
+                        input.nextLine();
+                        break;
+                    }
+
                     break;
 
                 case "5":

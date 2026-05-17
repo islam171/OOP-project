@@ -21,17 +21,17 @@ public class UniSystem {
             Database database = Database.getInstance();
             Admin admin = new Admin("Admin", "Admin", 20000);
             Manager manager = new Manager("1", "1", 20000, ManagerType.OR);
+            Teacher teacher = new Teacher("techer1", "teacheer1", 100000, TeacherType.LECTOR);
+            database.addUser(new Student("islam", "islam", "", 2));
+            database.addUser(teacher);
+            database.addCourse(new Course("Math", 5, teacher));
+
             database.addUser(admin);
             database.addUser(manager);
-            database.addUser(new Student("islam", "islam", "", 2));
-            database.addUser(new Student("islam", "islam", "", 2));
-            database.addUser(new Student("islam", "islam", "", 2));
-            database.addUser(new Student("islam", "islam", "", 2));
-            database.addUser(new Student("islam", "islam", "", 2));
             MainMenu menu = new MainMenu();
             menu.start();
         }
-        catch(UserExistsException e){
+        catch(UserExistsException | CourseExistsException e){
             System.out.println(e.getMessage());
         }
     }

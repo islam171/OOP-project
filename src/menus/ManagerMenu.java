@@ -8,6 +8,7 @@ import exceptions.CourseExistsException;
 import exceptions.CourseNotFoundException;
 import exceptions.NewsExistsException;
 import storage.Database;
+import storage.Table;
 import users.Manager;
 import users.Student;
 import users.Teacher;
@@ -25,9 +26,9 @@ public class ManagerMenu {
     public void menu() {
         Scanner input = new Scanner(System.in);
         Database database = Database.getInstance();
-        while(true) {
+        while (true) {
             String s = """
-                    StudentMenu
+                    Manager Menu
                     -->
                     1. Add course
                     2. Remove course
@@ -40,6 +41,7 @@ public class ManagerMenu {
                     9. View students by name
                     10. Generate report
                     11. View all teachers
+                    12. View all registration request
                     0. Exit
                     <--
                     """;
@@ -64,7 +66,7 @@ public class ManagerMenu {
                     String courseName = input.nextLine();
 
                     Course c = database.getCourses().stream().filter(item -> item.getName().equals(courseName)).findFirst().orElse(null);
-                    if(c == null) {
+                    if (c == null) {
                         System.out.println("No such course in the Database.");
                         break;
                     }
@@ -88,23 +90,32 @@ public class ManagerMenu {
                     }
                     break;
                 case "4":
-                    System.out.print("enter id of the news: ");
+                    System.out.print("Enter id of the news: ");
                     int id = input.nextInt();
                     News toDeleteNews = database.getNewById(id);
                     manager.removeNews(toDeleteNews);
+                    input.nextLine();
                     break;
                 case "5":
-                    System.out.print("enter id of the Student: ");
-                    int studId = input.nextInt();
-                    Student stud = database.getStudentById(studId);
-                    System.out.print("enter id of the course: ");
-                    int courseId = input.nextInt();
-                    Course courseRegistry = database.getCourses().stream().filter(item -> item.getId() == courseId).findFirst().orElse(null);
-                    try {
-                        manager.approveRegistration(new RegistrationRequest(stud, courseRegistry));
-                    } catch (CourseExistsException e) {
-                        throw new RuntimeException(e);
+                    while (true) {
+                        System.out.print("Enter id of the request: ");
+                        int requestId = input.nextInt();
+                        RegistrationRequest request = database.getRequestById(requestId);
+                        if(request == null){
+                            System.out.print("Request not found, try again");
+                            continue;
+                        }
+
+                        try {
+                            manager.approveRegistration(request);
+                        } catch (CourseExistsException e) {
+                            manager.rejectRegistration(request);
+                            System.out.print("Student already took this course, Registration rejected");
+                            break;
+                        }
+                        break;
                     }
+                    input.nextLine();
                     break;
                 case "6":
                     System.out.print("enter id of the Student: ");
@@ -114,6 +125,7 @@ public class ManagerMenu {
                     int courseIdToDelete = input.nextInt();
                     Course courseRegistryToDelete = database.getCourses().stream().filter(item -> item.getId() == courseIdToDelete).findFirst().orElse(null);
                     manager.rejectRegistration(new RegistrationRequest(studToDelete, courseRegistryToDelete));
+                    input.nextLine();
                     break;
                 case "7":
                     System.out.print("enter id of the teacher: ");
@@ -124,6 +136,7 @@ public class ManagerMenu {
                     Course assignCourse = database.getCourses().stream().filter(item -> item.getId() == idCourse).findFirst().orElse(null);
                     assert assignCourse != null;
                     manager.assignTeacher(teacher, assignCourse);
+                    input.nextLine();
                     break;
                 case "8":
                     manager.viewStudentsByGPA();
@@ -135,11 +148,19 @@ public class ManagerMenu {
                     manager.generateReport();
                 case "11":
                     manager.viewTeachers();
+                case "12":
+                    List<RegistrationRequest> requests = database.getRequests();
+                    try {
+                        Table.printTable(requests);
+                    } catch (IllegalAccessException e) {
+                        System.out.print(e);
+                    }
                 case "0":
+                        database.logout();
                     return;
                 default:
                     System.out.println("incorrect comm");
             }
+        }
     }
-}
 }

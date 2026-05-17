@@ -10,6 +10,7 @@ import exceptions.NewsExistsException;
 import storage.Database;
 import types.ManagerType;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,8 +60,6 @@ public class Manager extends Employee {
     public void approveRegistration(RegistrationRequest request) throws CourseExistsException {
         Student student = request.getStudent();
         student.addCourse(request.getCourse());
-        Database database = Database.getInstance();
-        database.addRequestForRegistration(student, request.getCourse());
     }
 
     public void rejectRegistration(RegistrationRequest request) {
@@ -82,7 +81,6 @@ public class Manager extends Employee {
         List<Student> students = database.getStudents();
 
         students.sort(new ComparatorGPA());
-
 
         for (Student student : students) {
             System.out.println("Student's name: " + student.getUsername() +
