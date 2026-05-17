@@ -56,17 +56,24 @@ public class ManagerMenu {
 
                     Course course = new Course(name, credit);
                     manager.addCourse(course);
+                    System.out.println(database.getCourses().getFirst());
                     break;
                 case "2":
                     System.out.print("enter course name: ");
+
                     String courseName = input.nextLine();
-                    database = new Database();
+
                     Course c = database.getCourses().stream().filter(item -> item.getName().equals(courseName)).findFirst().orElse(null);
+                    if(c == null) {
+                        System.out.println("No such course in the Database.");
+                        break;
+                    }
                     try {
                         manager.removeCourse(c);
                     } catch (CourseNotFoundException e) {
-                        throw new RuntimeException(e);
+                        System.out.println("No such course");
                     }
+
                     break;
                 case "3":
                     System.out.println("enter title: ");

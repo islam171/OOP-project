@@ -33,7 +33,7 @@ public class Manager extends Employee {
     }
 
     public void addCourse(Course course) {
-        Database database = new Database();
+        Database database = Database.getInstance();
         try {
             database.addCourse(course);
         }catch (CourseExistsException e){
@@ -42,7 +42,7 @@ public class Manager extends Employee {
     }
 
     public void removeCourse(Course course) throws CourseNotFoundException {
-        Database database = new Database();
+        Database database = Database.getInstance();
         database.removeCourse(course);
     }
 

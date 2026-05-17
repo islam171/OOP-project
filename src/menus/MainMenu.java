@@ -5,6 +5,7 @@ import exceptions.AuthWrongPassword;
 import exceptions.UserExistsException;
 import storage.Database;
 import users.Admin;
+import users.Manager;
 import users.Student;
 import users.User;
 
@@ -49,6 +50,10 @@ public class MainMenu {
                 if(user instanceof Admin) {
                     AdminMenu adminMenu = new AdminMenu((Admin) user);
                     adminMenu.menu();
+                }
+                else if(user instanceof Manager) {
+                    ManagerMenu managerMenu = new ManagerMenu((Manager) user);
+                    managerMenu.menu();
                 }
             } else if (command.equals("2")) {
                 System.out.println("Bye\n");
