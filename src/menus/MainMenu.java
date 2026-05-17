@@ -2,8 +2,10 @@ package menus;
 
 import exceptions.AuthUserDoesNotExist;
 import exceptions.AuthWrongPassword;
+import exceptions.UserExistsException;
 import storage.Database;
 import users.Admin;
+import users.Student;
 import users.User;
 
 import java.util.Scanner;
@@ -14,7 +16,14 @@ public class MainMenu {
         while (true) {
 
             String s = """
-                    Welcome to UNI
+                    Welcome to 
+                    
+                      __        __  ____    ____      ____         ___ \s
+                      \\ \\      / / / ___|  |  _ \\    |___ \\       / _ \\\s
+                       \\ \\ /\\ / /  \\___ \\  | |_) |     __) |     | | | |
+                        \\ V  V /    ___) | |  __/     / __/   _  | |_| |
+                         \\_/\\_/    |____/  |_|       |_____| (_)  \\___/
+                    
                     1.Login
                     2.Quit
                     """;
@@ -22,6 +31,7 @@ public class MainMenu {
 
             Scanner input = new Scanner(System.in);
             String command = input.nextLine();
+
 
             if (command.equals("1")) {
                 try{
@@ -37,7 +47,7 @@ public class MainMenu {
                     continue;
                 }
                 if(user instanceof Admin) {
-                    AdminMenu adminMenu = new AdminMenu();
+                    AdminMenu adminMenu = new AdminMenu((Admin) user);
                     adminMenu.menu();
                 }
             } else if (command.equals("2")) {
@@ -51,10 +61,10 @@ public class MainMenu {
 
     public void login() throws AuthUserDoesNotExist, AuthWrongPassword {
         Scanner input = new Scanner(System.in);
-        System.out.print("Enter username: \n");
+        System.out.print("Enter username: ");
         String username = input.nextLine();
 
-        System.out.print("Enter password: \n");
+        System.out.print("Enter password: ");
         String password = input.nextLine();
 
         Database database = Database.getInstance();
