@@ -54,4 +54,9 @@ public class Mark implements Serializable {
     public void setMarkType(MarkType markType) {
         this.markType = markType;
     }
+
+    public String toString(){
+        return "Course: " + this.getCourse().getName() + " " + getPoints() + " " + getMarkType();
+    }
+
 }

@@ -5,6 +5,8 @@ import storage.Log;
 import types.ManagerType;
 import types.TeacherType;
 import users.*;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,14 +18,13 @@ public class AdminMenu {
         this.admin = admin;
     }
 
-
     public void menu() {
         Scanner input = new Scanner(System.in);
         Database database = Database.getInstance();
         while (true) {
             String s = """
-                    Admin Menu
-                    -->
+                    
+                    ======= Admin Menu =======
                     1. Add student
                     2. Remove student
                     3. Add Teacher
@@ -31,8 +32,11 @@ public class AdminMenu {
                     5. Add Manager
                     6. Remove Manager
                     7. See log
+                    8. Save data
+                    9. Load data
+                    10. Show Users
                     0. Exit
-                    <--
+                    ===========================
                     """;
             System.out.print(s);
             String command = input.nextLine();
@@ -57,12 +61,22 @@ public class AdminMenu {
                     removeManager(input, database);
                     break;
                 case "7":
-                    showAllUsers(input, database);
+                    database.getLogs().forEach(item -> System.out.print(item + "\n"));
                     break;
                 case "8":
+                    saveDate(database);
                     break;
                 case "9":
-                    database.getLogs().forEach(item -> System.out.print(item + "\n"));
+                    loadDate(database);
+                    break;
+                case "10":
+                    List<User> users = database.getUsers();
+                    if(users.isEmpty()){
+                        System.out.print("No users\n");
+                        break;
+                    }
+                    System.out.print("All users: \n");
+                    users.forEach(user -> System.out.print(user + "\n"));
                     break;
                 case "0":
                     return;
@@ -97,6 +111,8 @@ public class AdminMenu {
                 return;
             } catch (UserExistsException e) {
                 System.out.print("That user already exists\n");
+            }catch(UserNotFoundException e){
+                System.out.print(e.getMessage());
             }
         }
     }
@@ -170,7 +186,9 @@ public class AdminMenu {
 
                 break;
             } catch (UserExistsException e) {
-                System.out.print("Teacher already exists");
+                System.out.print("User already exists");
+            } catch (UserNotFoundException e) {
+                System.out.print(e.getMessage());
             }
         }
     }
@@ -238,7 +256,7 @@ public class AdminMenu {
                 Log log = new Log(db.getUser().getUsername(), "added manger");
                 db.addLogs(log);
                 break;
-            } catch (UserExistsException e) {
+            } catch (UserExistsException | UserNotFoundException e) {
                 System.out.print("Manager already exists");
             }
         }
@@ -294,4 +312,23 @@ public class AdminMenu {
 
         return " ".repeat(left) + text + " ".repeat(right);
     }
+
+    public void saveDate(Database db){
+        try {
+            db.save();
+            System.out.print("Data saved");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void loadDate(Database db) {
+        try {
+            db.loadData();
+            System.out.print("Data loaded");
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

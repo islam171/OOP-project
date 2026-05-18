@@ -16,7 +16,7 @@ public class Admin extends Employee {
         super(username, password, salary);
     }
 
-    public void addUser(User user) throws UserExistsException {
+    public void addUser(User user) throws UserExistsException, UserNotFoundException {
         Database database= Database.getInstance();
         database.addUser(user);
     }

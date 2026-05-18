@@ -4,12 +4,11 @@ import academic.Course;
 import academic.Mark;
 import academic.News;
 import academic.RegistrationRequest;
-import exceptions.CourseExistsException;
-import exceptions.CourseNotFoundException;
-import exceptions.NewsExistsException;
+import exceptions.*;
 import storage.Database;
 import types.ManagerType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -68,17 +67,24 @@ public class Manager extends Employee {
     }
 
 
-    public void assignTeacher(Teacher teacher, Course course) {
+    public void assignTeacher(Teacher teacher, Course course) throws CourseHasInstructor, CourseNotFoundException, TeacherNotFoundException {
+        if(course == null){
+            throw new CourseNotFoundException("");
+        }
+        if(teacher == null){
+            throw new TeacherNotFoundException("");
+        }
         if (course.getInstructor() != null) {
             course.setInstructor(teacher);
+            return;
         }
-        throw new RuntimeException("This course already has instructor");
+        throw new CourseHasInstructor("This course already has instructor");
     }
 
 
     public void viewStudentsByGPA() {
         Database database = Database.getInstance();
-        List<Student> students = database.getStudents();
+        List<Student> students = new ArrayList<>(database.getStudents());
 
         students.sort(new ComparatorGPA());
 
@@ -92,10 +98,9 @@ public class Manager extends Employee {
 
     public void viewStudentsByName() {
         Database database = Database.getInstance();
-        List<Student> students = database.getStudents();
+        List<Student> students = new ArrayList<>(database.getStudents());
 
         students.sort(new ComparatorName());
-
 
         for (Student student : students) {
             System.out.println("Student's name: " + student.getUsername() +
@@ -112,7 +117,7 @@ public class Manager extends Employee {
         for(Map.Entry<Course, List<Mark>> c : collect.entrySet()){
             System.out.print("Course: " + c.getKey().getName());
             double marksByCourse = c.getValue().stream().collect(Collectors.groupingBy(Mark::getStudent, Collectors.summingDouble(Mark::getPoints))).values().stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-            System.out.println(" AVG:" + marksByCourse);
+            System.out.println(" AVG: " + marksByCourse);
         }
     }
 
@@ -125,7 +130,7 @@ public class Manager extends Employee {
     }
 
     public String toString() {
-        return "Manager: " + super.toString() + "Manager type: " + getManagerType() + ";";
+        return "Manager: " + super.toString() + " manager type: " + getManagerType() + ";";
     }
 
 }

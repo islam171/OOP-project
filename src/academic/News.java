@@ -64,4 +64,8 @@ public class News implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public String toString(){
+        return "News " + getId() + " title: " + getTitle() + " ";
+    }
 }

@@ -52,7 +52,7 @@ public class Course implements Serializable {
     }
 
     public String toString(){
-        return "Course, Name: "  + getName() + "; credits: " + getCredit() + " instructor: " + getInstructor();
+        return "Course "+ getId() +" , Name: "  + getName() + "; credits: " + getCredit() + " instructor: " + getInstructor();
     }
 
     public int getId() {

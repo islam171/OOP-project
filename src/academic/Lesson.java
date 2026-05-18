@@ -29,7 +29,7 @@ public class Lesson implements Serializable {
 
     @Override
     public String toString(){
-        return "Lessons, ";
+        return "Lessons, " + getLessonsId() + " " + getCourse().getName() +  " " + getDate();
     }
 
     @Override
