@@ -2,6 +2,7 @@ package users;
 
 import academic.Course;
 import academic.Lesson;
+import exceptions.CourseException;
 import exceptions.MarkWrongException;
 import exceptions.TeacherException;
 import types.MarkType;
@@ -60,7 +61,12 @@ public class Teacher extends Employee {
 
     public void viewLessons() {
         Database database = Database.getInstance();
-        System.out.print("Lessons: ");
+        List<Lesson> lessons = database.getLessons();
+        if(lessons.isEmpty()){
+            System.out.print("No lessons\n");
+            return;
+        }
+        System.out.print("Lessons: \n");
         for (Lesson lesson : database.getLessons()) {
             if (lesson.getCourse().getInstructor().equals(this)) {
                 System.out.println(lesson);
@@ -68,7 +74,7 @@ public class Teacher extends Employee {
         }
     }
 
-    public void putMark(Student student, MarkType markType, double points) throws TeacherException, MarkWrongException, StubNotFoundException {
+    public void putMark(Student student, MarkType markType, double points) throws TeacherException, MarkWrongException, StubNotFoundException, CourseException {
         Database database = Database.getInstance();
         Course course = database.getCourses().stream().filter(item -> {
             if (item.getInstructor() != null)

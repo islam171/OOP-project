@@ -1,8 +1,6 @@
 package users;
 
-import exceptions.CourseExistsException;
-import exceptions.RatingTeacherException;
-import exceptions.StudentCourseException;
+import exceptions.*;
 import types.Attendance;
 import academic.Course;
 import academic.Lesson;
@@ -13,7 +11,7 @@ import java.util.List;
 import java.util.Vector;
 
 
-public class Student extends User implements Retakes {
+public class Student extends User {
 
     private int yearOfStudy;
     private String major;
@@ -29,9 +27,6 @@ public class Student extends User implements Retakes {
         this.specialty = specialty;
     }
 
-    public void retakeCourse() {
-        System.out.print("Retake!");
-    }
 
     public void registerForCourse(Course c) {
         Database database = Database.getInstance();
@@ -78,9 +73,11 @@ public class Student extends User implements Retakes {
 
     public void addFail() {
         this.failsCount++;
-        if (this.failsCount > 3) {
-            System.out.println("More than 3 fails! High risk of expulsion");
-        }
+
+    }
+
+    public int getFailsCount(){
+        return this.failsCount;
     }
 
     public void viewCourse() {
@@ -135,11 +132,19 @@ public class Student extends User implements Retakes {
         return this.courses;
     }
 
-    public void addCourse(Course course) throws CourseExistsException {
+    public void addCourse(Course course) throws CourseException {
         if (!this.courses.contains(course))
             this.courses.add(course);
         else
-            throw new CourseExistsException("Student already has this course");
+            throw new CourseException("Student already has this course");
+    }
+
+    public void becomeResearcher() throws ResearcherException, UserException {
+        Database database = Database.getInstance();
+        if (database.getResearcherByUser(this) != null) {
+            throw new ResearcherException("User is already researcher");
+        }
+        database.makeResearcher(this.getId());
     }
 
     public String toString(){

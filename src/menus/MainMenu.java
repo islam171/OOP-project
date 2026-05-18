@@ -1,8 +1,6 @@
 package menus;
 
-import exceptions.AuthUserDoesNotExist;
-import exceptions.AuthWrongPassword;
-import exceptions.UserExistsException;
+import exceptions.AuthException;
 import storage.Database;
 import users.*;
 
@@ -34,7 +32,7 @@ public class MainMenu {
             if (command.equals("1")) {
                 try{
                     login();
-                }catch (AuthUserDoesNotExist | AuthWrongPassword e){
+                }catch (AuthException e){
                     System.out.println(e.getMessage());
                     continue;
                 }
@@ -76,7 +74,7 @@ public class MainMenu {
         }
     }
 
-    public void login() throws AuthUserDoesNotExist, AuthWrongPassword {
+    public void login() throws AuthException {
         Scanner input = new Scanner(System.in);
         System.out.print("Enter username: ");
         String username = input.nextLine();
@@ -89,8 +87,7 @@ public class MainMenu {
         if (user != null) {
             database.login(user, password);
         }else{
-
-            throw new AuthUserDoesNotExist();
+            throw new AuthException("User not found");
         }
     }
 

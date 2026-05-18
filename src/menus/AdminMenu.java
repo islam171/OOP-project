@@ -1,4 +1,5 @@
 package menus;
+
 import exceptions.*;
 import storage.Database;
 import storage.Log;
@@ -35,6 +36,7 @@ public class AdminMenu {
                     8. Save data
                     9. Load data
                     10. Show Users
+                    11. Messages
                     0. Exit
                     ===========================
                     """;
@@ -55,7 +57,7 @@ public class AdminMenu {
                     removeTeacher(input, database);
                     break;
                 case "5":
-                    addManager(input,database);
+                    addManager(input, database);
                     break;
                 case "6":
                     removeManager(input, database);
@@ -70,18 +72,15 @@ public class AdminMenu {
                     loadDate(database);
                     break;
                 case "10":
-                    List<User> users = database.getUsers();
-                    if(users.isEmpty()){
-                        System.out.print("No users\n");
-                        break;
-                    }
-                    System.out.print("All users: \n");
-                    users.forEach(user -> System.out.print(user + "\n"));
+                    showAllUsers(input, database);
+                    break;
+                case "11":
+                    manageMessage(input, database);
                     break;
                 case "0":
                     return;
                 default:
-                    System.out.print("Incorrect command. try again");
+                    System.out.print("Incorrect command. try again\n");
             }
         }
     }
@@ -109,10 +108,8 @@ public class AdminMenu {
                 Log log = new Log(db.getUser().getUsername(), "added student");
                 db.addLogs(log);
                 return;
-            } catch (UserExistsException e) {
-                System.out.print("That user already exists\n");
-            }catch(UserNotFoundException e){
-                System.out.print(e.getMessage());
+            } catch (UserException e) {
+                System.out.print(e.getMessage() + "\n");
             }
         }
     }
@@ -129,8 +126,8 @@ public class AdminMenu {
                 Log log = new Log(db.getUser().getUsername(), "deleted student");
                 db.addLogs(log);
                 break;
-            } catch (UserNotFoundException e) {
-                System.out.print("Student not found, try again");
+            } catch (UserException e) {
+                System.out.print(e.getMessage() + "\n");
             }
         }
     }
@@ -162,16 +159,16 @@ public class AdminMenu {
                         type = TeacherType.TUTOR;
                         break;
                     case 2:
-                        type = TeacherType.TUTOR;
+                        type = TeacherType.PROFESSOR;
                         break;
                     case 3:
-                        type = TeacherType.TUTOR;
+                        type = TeacherType.LECTOR;
                         break;
                     case 4:
-                        type = TeacherType.TUTOR;
+                        type = TeacherType.SENIOR_LECTOR;
                         break;
                     default:
-                        System.out.print("Incorrect command. try again");
+                        System.out.print("Incorrect command. try again\n");
                         continue;
                 }
                 break;
@@ -185,85 +182,83 @@ public class AdminMenu {
                 db.addLogs(log);
 
                 break;
-            } catch (UserExistsException e) {
-                System.out.print("User already exists");
-            } catch (UserNotFoundException e) {
+            } catch (UserException e) {
                 System.out.print(e.getMessage());
             }
         }
     }
 
     public void removeTeacher(Scanner input, Database db) {
-        while (true) {
-            System.out.print("Enter teacher id: ");
-            int id = input.nextInt();
-            Teacher teacher = db.getTeachers().stream().filter(item -> item.getId() == id).findFirst().orElse(null);
-            input.nextLine();
-            try {
-                db.deleteUser(teacher);
-                System.out.print("Teacher successfully deleted\n");
-                Log log = new Log(db.getUser().getUsername(), "removed teacher");
-                db.addLogs(log);
-                break;
-            } catch (UserNotFoundException e) {
-                System.out.print("Teacher not found, try again");
-            }
+
+        System.out.print("Enter teacher id: ");
+        int id = input.nextInt();
+        Teacher teacher = db.getTeachers().stream().filter(item -> item.getId() == id).findFirst().orElse(null);
+        input.nextLine();
+        try {
+            db.deleteUser(teacher);
+            System.out.print("Teacher successfully deleted\n");
+            Log log = new Log(db.getUser().getUsername(), "removed teacher");
+            db.addLogs(log);
+
+        } catch (UserException e) {
+            System.out.print(e.getMessage() + "\n");
         }
+
     }
 
-    public void addManager(Scanner input, Database db){
-        while(true){
-            System.out.print("Enter manager name: ");
-            String name = input.nextLine();
+    public void addManager(Scanner input, Database db) {
 
-            System.out.print("Enter password: ");
-            String password = input.nextLine();
+        System.out.print("Enter manager name: ");
+        String name = input.nextLine();
 
-            System.out.print("Enter salary: ");
-            double salary = input.nextDouble();
+        System.out.print("Enter password: ");
+        String password = input.nextLine();
 
-            ManagerType type;
+        System.out.print("Enter salary: ");
+        double salary = input.nextDouble();
 
-            while (true) {
-                System.out.print("""
-                        Choose manager type: 
-                            1. HR
-                            2. OR
-                            3. FINANCE
-                        """);
-                int comm = input.nextInt();
-                switch (comm) {
-                    case 1:
-                        type = ManagerType.HR;
-                        break;
-                    case 2:
-                        type = ManagerType.OR;
-                        break;
-                    case 3:
-                        type = ManagerType.FINANCE;
-                        break;
-                    default:
-                        System.out.print("Incorrect command");
-                        continue;
-                }
-                break;
+        ManagerType type;
+
+        while (true) {
+            System.out.print("""
+                    Choose manager type: 
+                        1. HR
+                        2. OR
+                        3. FINANCE
+                    """);
+            int comm = input.nextInt();
+            switch (comm) {
+                case 1:
+                    type = ManagerType.HR;
+                    break;
+                case 2:
+                    type = ManagerType.OR;
+                    break;
+                case 3:
+                    type = ManagerType.FINANCE;
+                    break;
+                default:
+                    System.out.print("Incorrect command");
+                    continue;
             }
-            input.nextLine();
-            Manager manager = new Manager(name, password, salary, type);
-            try {
-                db.addUser(manager);
-                System.out.print("Manager successfully added\n");
-                Log log = new Log(db.getUser().getUsername(), "added manger");
-                db.addLogs(log);
-                break;
-            } catch (UserExistsException | UserNotFoundException e) {
-                System.out.print("Manager already exists");
-            }
+            break;
         }
+        input.nextLine();
+        Manager manager = new Manager(name, password, salary, type);
+        try {
+            db.addUser(manager);
+            System.out.print("Manager successfully added\n");
+            Log log = new Log(db.getUser().getUsername(), "added manger");
+            db.addLogs(log);
+
+        } catch (UserException e) {
+            System.out.print(e.getMessage() + "\n");
+        }
+
     }
 
-    public void removeManager(Scanner input, Database db){
-        while (true) {
+    public void removeManager(Scanner input, Database db) {
+
             System.out.print("Enter manager id: ");
             int id = input.nextInt();
             Manager manager = db.getManagers().stream().filter(item -> item.getId() == id).findFirst().orElse(null);
@@ -274,21 +269,19 @@ public class AdminMenu {
                 System.out.print("Manager successfully deleted\n");
                 Log log = new Log(db.getUser().getUsername(), "removed manager");
                 db.addLogs(log);
-                break;
-            } catch (UserNotFoundException e) {
-                System.out.print("Manager not found, try again");
+            } catch (UserException e) {
+                System.out.print(e.getMessage()+"\n");
             }
-        }
+
     }
 
-    public void showAllUsers(Scanner in, Database db){
+    public void showAllUsers(Scanner in, Database db) {
         List<User> users = db.getUsers();
-        StringBuilder sb = new StringBuilder();
 
         int username = 8;
         int id = 2;
         int type = 4;
-        for(User user : users){
+        for (User user : users) {
             id = Math.max(String.valueOf(Math.abs(user.getId())).length(), id);
             username = Math.max(String.valueOf(user.getUsername()).length(), username);
             type = Math.max(user.getClass().getSimpleName().length(), type);
@@ -297,7 +290,7 @@ public class AdminMenu {
                 "| %s | %s | %s |\n",
                 center("ID", id), center("USERNAME", username), center("TYPE", type)
         );
-        for(User user : users){
+        for (User user : users) {
             System.out.printf("| %s | %s | %s |\n", center(String.valueOf(user.getId()), id), center(user.getUsername(), username), center(user.getClass().getSimpleName(), type));
         }
 
@@ -305,7 +298,7 @@ public class AdminMenu {
 
     public static String center(String text, int width) {
         int padding = width - text.length();
-        if(padding < 0) padding = text.length();
+        if (padding < 0) padding = text.length();
 
         int left = padding / 2;
         int right = padding - left;
@@ -313,7 +306,7 @@ public class AdminMenu {
         return " ".repeat(left) + text + " ".repeat(right);
     }
 
-    public void saveDate(Database db){
+    public void saveDate(Database db) {
         try {
             db.save();
             System.out.print("Data saved");
@@ -328,6 +321,56 @@ public class AdminMenu {
             System.out.print("Data loaded");
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void manageMessage(Scanner input, Database db) {
+        while (true) {
+            try {
+
+                System.out.print("""
+                        1. Send message
+                        2. Read message
+                        0. Cancel
+                        """);
+                int command = input.nextInt();
+                input.nextLine();
+                switch (command) {
+                    case 1:
+                        sendMessage(input, db);
+                        break;
+                    case 2:
+                        admin.viewMessages();
+                        break;
+                    case 0:
+                        return;
+                    default:
+                        return;
+                }
+
+            } catch (PermissionException e) {
+                System.out.print(e.getMessage() + "\n");
+            }
+        }
+    }
+
+    public void sendMessage(Scanner input, Database db) {
+        System.out.println("===== Users =====");
+        db.getUsers().stream().filter(user -> (user instanceof Employee && !user.equals(this.admin))).forEach(u -> System.out.println("| ID: " + u.getId() + " | " + u.getUsername() + "|"));
+
+        System.out.print("Enter recipient ID: ");
+        try {
+            int userId = Integer.parseInt(input.nextLine().trim());
+            var recipient = db.getUserById(userId);
+
+            System.out.print("Enter message: ");
+            String text = input.nextLine();
+
+            admin.sendMessage(recipient, text);
+            System.out.print("Message sent.\n");
+
+        } catch (NumberFormatException | PermissionException | MessageException e) {
+            System.out.print("Invalid input.\n");
         }
     }
 

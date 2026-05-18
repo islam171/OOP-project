@@ -1,10 +1,9 @@
 package menus;
 
-import exceptions.CantBeResearcherException;
-import exceptions.PermissionException;
-import exceptions.UserNotFoundException;
+import exceptions.*;
 import research.ResearcherDecorator;
 import storage.Database;
+import storage.Log;
 import users.Employee;
 import users.User;
 
@@ -31,13 +30,13 @@ public class EmployeeMenu {
                         1. Send message
                         2. Read messages
                         3. View news
-                        ===========================
                         """ +
                         (isResearcher ?
                                 "4. Researcher menu\n" :
                                 "4. Become Researcher\n") +
                         """
                         0. Logout
+                        ===========================
                         """);
                 String command = input.nextLine();
 
@@ -54,14 +53,14 @@ public class EmployeeMenu {
                         }
                     }
                     case "0" -> {
-                        System.out.println("Logging out...");
+                        System.out.print("Logging out...\n");
                         return;
                     }
-                    default -> System.out.println("Incorrect command, try again.");
+                    default -> System.out.print("Incorrect command, try again.\n");
                 }
 
             } catch (PermissionException e) {
-                System.out.println(e.getMessage());
+                System.out.print(e.getMessage()+"\n");
             }
         }
     }
@@ -74,20 +73,20 @@ public class EmployeeMenu {
                 input.nextLine();
 
                 User user = db.getUserById(userId);
-                if (user == null) throw new UserNotFoundException("");
+                if (user == null) throw new UserException("User not found");
 
                 System.out.print("Enter message text: ");
                 String text = input.nextLine();
 
                 this.employee.sendMessage(user, text);
-                System.out.println("Message sent successfully.");
+                System.out.print("Message sent successfully.\n");
+                Log log = new Log(db.getUser().getUsername(), "sent message");
+                db.addLogs(log);
                 return;
 
-            } catch (PermissionException e) {
-                System.out.println(e.getMessage());
+            } catch (PermissionException | MessageException | UserException e) {
+                System.out.print(e.getMessage() + "\n");
                 return;
-            } catch (UserNotFoundException e) {
-                System.out.println("User not found, try again.");
             }
         }
     }
@@ -105,25 +104,12 @@ public class EmployeeMenu {
     }
 
     public void becomeResearcher(Scanner input, Database database) {
-        if (database.getResearcherByUser(this.employee) != null) {
-            System.out.println("You are already a researcher.");
-            return;
-        }
-
-        System.out.print("Confirm becoming a researcher? (yes/no): ");
-        String confirm = input.nextLine().trim();
-
-        if (!confirm.equalsIgnoreCase("yes")) {
-            System.out.println("Cancelled.");
-            return;
-        }
-
-        try {
-            database.makeResearcher(this.employee.getId());
-            System.out.println("You are now registered as a Researcher!");
-        } catch (UserNotFoundException e) {
-            System.out.println("Error: " + e.getMessage());
-        } catch (CantBeResearcherException e) {
+        try{
+            this.employee.becomeResearcher();
+            System.out.print("You are now registered as a Researcher!\n");
+            Log log = new Log(database.getUser().getUsername(), "become researcher");
+            database.addLogs(log);
+        } catch (ResearcherException | UserException e) {
             System.out.print(e.getMessage() + "\n");
         }
     }

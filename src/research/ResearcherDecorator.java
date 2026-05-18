@@ -1,6 +1,6 @@
 package research;
 
-import exceptions.CantBeResearcherException;
+import exceptions.ResearcherException;
 import storage.Database;
 import users.Admin;
 import users.Student;
@@ -17,16 +17,16 @@ public class ResearcherDecorator implements Researcher, Serializable {
     private User user;
     private List<ResearchPaper> papers = new ArrayList<>();
 
-    public ResearcherDecorator(User user) throws CantBeResearcherException {
+    public ResearcherDecorator(User user) throws ResearcherException {
         if(user instanceof Student){
             Student student = (Student) user;
             if(student.getYearOfStudy() != 4){
-                throw new CantBeResearcherException("Student A student who is not in his 4th year cannot be a researcher");
+                throw new ResearcherException("Student who is not in his 4th year cannot be a researcher");
             }
 
         }
         if(user instanceof Admin){
-            throw new CantBeResearcherException("Admin cannot be researcher");
+            throw new ResearcherException("Admin cannot be researcher");
         }
 
         setUser(user);

@@ -1,17 +1,14 @@
 package menus;
 
 import academic.Course;
-import academic.Mark;
 import academic.News;
 import academic.RegistrationRequest;
 import exceptions.*;
 import storage.Database;
-import storage.Table;
+import storage.Log;
 import users.Manager;
-import users.Student;
 import users.Teacher;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Scanner;
 
@@ -134,7 +131,7 @@ public class ManagerMenu {
         }
         try {
             manager.removeCourse(c);
-        } catch (CourseNotFoundException e) {
+        } catch (CourseException e) {
             System.out.println("No such course");
         }
     }
@@ -184,7 +181,7 @@ public class ManagerMenu {
         News news = new News(title, content);
         try {
             manager.addNews(news);
-        } catch (NewsExistsException e) {
+        } catch (NewsException e) {
             System.out.print("News already exists \n");
         }
     }
@@ -249,10 +246,9 @@ public class ManagerMenu {
             System.out.print("Request not found, try again\n");
             return;
         }
-
         try {
             manager.approveRegistration(request);
-        } catch (CourseExistsException e) {
+        } catch (CourseException e) {
             manager.rejectRegistration(request);
             System.out.print("Student already took this course, Registration was rejected\n");
         }
@@ -284,27 +280,26 @@ public class ManagerMenu {
     }
 
     public void assignTeacher(Scanner input, Database db) {
-        while (true) {
-            try {
 
-                System.out.print("Enter id of the teacher: ");
-                int idTeacher = input.nextInt();
-                Teacher teacher = db.getTeachers().stream().filter(item -> item.getId() == idTeacher).findFirst().orElse(null);
-                System.out.print("Enter id of the course: ");
-                int idCourse = input.nextInt();
-                input.nextLine();
-                Course course = db.getCourses().stream().filter(item -> item.getId() == idCourse).findFirst().orElse(null);
-                manager.assignTeacher(teacher, course);
-                break;
+        try {
 
-            } catch (TeacherNotFoundException e) {
-                System.out.print("Teacher not found. try again\n");
-                return;
-            } catch (CourseNotFoundException e) {
-                System.out.print("Course not found, try again\n");
-                return;
-            }
+            System.out.print("Enter id of the teacher: ");
+            int idTeacher = input.nextInt();
+            Teacher teacher = db.getTeachers().stream().filter(item -> item.getId() == idTeacher).findFirst().orElse(null);
+            System.out.print("Enter id of the course: ");
+            int idCourse = input.nextInt();
+            input.nextLine();
+            Course course = db.getCourses().stream().filter(item -> item.getId() == idCourse).findFirst().orElse(null);
+            manager.assignTeacher(teacher, course);
+            Log log = new Log("Teacher " + teacher.getUsername(), " is assigned to the course " + course.getName());
+            db.addLogs(log);
+        } catch (TeacherNotFoundException e) {
+            System.out.print("Teacher not found. try again\n");
+
+        } catch (CourseException e) {
+            System.out.print("Course not found, try again\n");
         }
+
 
     }
 
@@ -352,6 +347,8 @@ public class ManagerMenu {
 
             manager.sendMessage(recipient, text);
             System.out.println("Message sent.");
+            Log log = new Log(db.getUser().getUsername(), "sent message");
+            db.addLogs(log);
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid input.");
