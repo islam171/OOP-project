@@ -187,7 +187,7 @@ public class Database implements Serializable {
 
     public boolean isStudentFailedCourse(Student student, Course course) {
         Mark att1 = marks.stream().filter(m -> m.getStudent().equals(student) && m.getCourse().equals(course) && m.getMarkType() == MarkType.FIRST__ATTESTATION).findFirst().orElse(null);
-        Mark att2 = marks.stream().filter(m -> m.getStudent().equals(student) && m.getCourse().equals(course) && m.getMarkType() == MarkType.FIRST__ATTESTATION).findFirst().orElse(null);
+        Mark att2 = marks.stream().filter(m -> m.getStudent().equals(student) && m.getCourse().equals(course) && m.getMarkType() == MarkType.SECOND__ATTESTATION).findFirst().orElse(null);
         Mark finaMark = marks.stream().filter(m -> m.getStudent().equals(student) && m.getCourse().equals(course) && m.getMarkType() == MarkType.FINAL).findFirst().orElse(null);
 
         if (att1 != null && att2 != null) {
@@ -292,6 +292,10 @@ public class Database implements Serializable {
 
     public ResearcherDecorator getResearcherByUser(User user) {
         return this.researchers.stream().filter(item -> item.getUser().getId() == user.getId()).findFirst().orElse(null);
+    }
+
+    public List<ResearcherDecorator> getResearchers(){
+        return this.researchers;
     }
 
     public void makeResearcher(int userId) throws ResearcherException, UserException {

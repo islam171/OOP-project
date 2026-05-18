@@ -4,9 +4,11 @@ import academic.Course;
 import academic.News;
 import academic.RegistrationRequest;
 import exceptions.*;
+import research.ResearcherDecorator;
 import storage.Database;
 import storage.Log;
 import users.Manager;
+import users.Student;
 import users.Teacher;
 
 import java.util.List;
@@ -35,6 +37,7 @@ public class ManagerMenu {
                     7. Generate report
                     8. View all teachers
                     9. Message
+                    10. Assign supervisor to student
                     0. Exit
                     ===========================
                     """;
@@ -68,6 +71,10 @@ public class ManagerMenu {
                     break;
                 case "9":
                     manageMessage(input, database);
+                    break;
+                case "10":
+                    assignSupervisor(input, database);
+                    break;
                 case "0":
                     database.logout();
                     return;
@@ -357,5 +364,59 @@ public class ManagerMenu {
         }
     }
 
+    private void assignSupervisor(Scanner input, Database database) {
+        List<Student> fourthYear = database.getStudents().stream()
+                .filter(s -> s.getYearOfStudy() == 4)
+                .toList();
 
+        if (fourthYear.isEmpty()) {
+            System.out.println("No 4th year students found.");
+            return;
+        }
+
+        System.out.println("===== 4th Year Students =====");
+        for (Student s : fourthYear) {
+            System.out.println("ID: " + s.getId() + " | " + s.getUsername());
+        }
+
+        System.out.print("Enter student ID: ");
+        try {
+            int studentId = Integer.parseInt(input.nextLine().trim());
+            Student student = database.getStudentById(studentId);
+            if (student == null) { System.out.println("Student not found."); return; }
+
+            List<ResearcherDecorator> eligible = database.getResearchers().stream()
+                    .filter(r -> r.getHIndex() >= 3)
+                    .toList();
+
+            if (eligible.isEmpty()) {
+                System.out.println("No researchers with h-index >= 3 available.");
+                return;
+            }
+
+            System.out.println("===== Eligible Supervisors (h-index >= 3) =====");
+            for (ResearcherDecorator r : eligible) {
+                System.out.println("ID: " + r.getUser().getId()
+                        + " | " + r.getUser().getUsername()
+                        + " | h-index: " + r.getHIndex());
+            }
+
+            System.out.print("Enter researcher ID: ");
+            int researcherId = Integer.parseInt(input.nextLine().trim());
+            ResearcherDecorator supervisor = eligible.stream()
+                    .filter(r -> r.getUser().getId() == researcherId)
+                    .findFirst().orElse(null);
+
+            if (supervisor == null) { System.out.println("Researcher not found."); return; }
+
+            student.setSupervisor(supervisor);
+            System.out.println("Supervisor assigned: " + supervisor.getUser().getUsername()
+                    + " → " + student.getUsername());
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+        } catch (SupervisorException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
 }

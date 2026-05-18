@@ -1,8 +1,9 @@
 package research;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class ResearchPaper {
+public class ResearchPaper implements Serializable {
 
     private String name;
     private int pages;

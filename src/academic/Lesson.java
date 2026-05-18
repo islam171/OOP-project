@@ -35,7 +35,7 @@ public class Lesson implements Serializable {
     @Override
     public boolean equals(Object o){
         if(o == this) return true;
-        if(!(o instanceof Course)) return false;
+        if(!(o instanceof Lesson)) return false;
 
         Lesson l = (Lesson) o;
         return this.getLessonsId() == l.getLessonsId();
