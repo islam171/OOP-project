@@ -1,18 +1,17 @@
 package menus;
 
-import academic.Course;
-import academic.Lesson;
-import exceptions.CantBeResearcherException;
+import exceptions.ResearcherException;
 import exceptions.PermissionException;
-import exceptions.UserNotFoundException;
+import exceptions.UserException;
 import research.ResearcherDecorator;
 import storage.Database;
+import storage.Log;
 import types.MarkType;
+import users.Employee;
 import users.Student;
 import users.Teacher;
 
 import java.rmi.StubNotFoundException;
-import java.util.List;
 import java.util.Scanner;
 
 public class TeacherMenu {
@@ -99,6 +98,7 @@ public class TeacherMenu {
                         1. First attestation
                         2. Second attestation
                         3. Final
+                        0.Cancel
                         """);
 
                 MarkType type = null;
@@ -113,9 +113,12 @@ public class TeacherMenu {
                         break;
                     case 3:
                         type = MarkType.FINAL;
+                        break;
+                    case 0:
+                        return;
                     default:
                         System.out.print("Invalid command\n");
-                        break;
+                        continue;
                 }
 
                 System.out.print("Points: ");
@@ -131,37 +134,26 @@ public class TeacherMenu {
     }
 
     public void viewStudentInfo(Scanner input, Database db) {
-        while (true) {
-            System.out.print("Enter student id: ");
-            int id = Integer.parseInt(input.nextLine());
-            try {
-                teacher.viewStudentInfo(id);
-                return;
-            } catch (StubNotFoundException e) {
-                System.out.print("Student not found try again\n");
-            }
+
+        System.out.print("Enter student id: ");
+        int id = Integer.parseInt(input.nextLine());
+        try {
+            teacher.viewStudentInfo(id);
+        } catch (StubNotFoundException e) {
+            System.out.print("Student not found try again\n");
         }
+
     }
 
     public void becomeResearcher(Scanner input, Database database) {
-        if (database.getResearcherByUser(this.teacher) != null) {
-            System.out.println("You are already a researcher.");
-            return;
-        }
-
-        System.out.print("Confirm becoming a researcher? (yes/no): ");
-        String confirm = input.nextLine().trim();
-
-        if (!confirm.equalsIgnoreCase("yes")) {
-            System.out.println("Cancelled.");
-            return;
-        }
-
-        try {
-            database.makeResearcher(this.teacher.getId());
+        try{
+            this.teacher.becomeResearcher();
             System.out.println("You are now registered as a Researcher!");
-        } catch (UserNotFoundException | CantBeResearcherException e) {
-            System.out.println("Error: " + e.getMessage());
+
+            Log log = new Log(database.getUser().getUsername(), "become researcher");
+            database.addLogs(log);
+        } catch (ResearcherException | UserException e) {
+            System.out.print(e.getMessage() + "\n");
         }
     }
 
@@ -197,7 +189,7 @@ public class TeacherMenu {
 
     public void sendMessage(Scanner input, Database db) {
         System.out.println("===== Users =====");
-        db.getUsers().forEach(u -> System.out.println("| ID: " + u.getId() + " | " + u.getUsername() + "|"));
+        db.getUsers().stream().filter(user -> (user instanceof Employee && !user.equals(this.teacher))).forEach(u -> System.out.println("| ID: " + u.getId() + " | " + u.getUsername() + "|"));
 
         System.out.print("Enter recipient ID: ");
         try {

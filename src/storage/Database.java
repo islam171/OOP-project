@@ -44,10 +44,10 @@ public class Database implements Serializable {
 
     // AUTH
 
-    public void login(User user, String password) throws AuthWrongPassword {
+    public void login(User user, String password) throws AuthException {
 
         if (!user.getPassword().equals(password)) {
-            throw new AuthWrongPassword();
+            throw new AuthException("Password incorrect");
         }
         this.user = user;
     }
@@ -69,9 +69,9 @@ public class Database implements Serializable {
 
     // Users
 
-    public void addUser(User user) throws UserExistsException, UserNotFoundException {
+    public void addUser(User user) throws UserException {
         if (this.users.contains(user)) {
-            throw new UserExistsException(user.getUsername());
+            throw new UserException(user.getUsername());
         } else {
             this.users.add(user);
             if (user instanceof Teacher) {
@@ -79,7 +79,7 @@ public class Database implements Serializable {
                 if (teacher.getTeacherType() == TeacherType.PROFESSOR) {
                     try {
                         makeResearcher(teacher.getId());
-                    } catch (CantBeResearcherException e) {
+                    } catch (ResearcherException e) {
 
                     }
                 }
@@ -87,9 +87,9 @@ public class Database implements Serializable {
         }
     }
 
-    public void deleteUser(User user) throws UserNotFoundException {
+    public void deleteUser(User user) throws UserException {
         if (user != null && this.users.contains(user)) this.users.remove(user);
-        else throw new UserNotFoundException("");
+        else throw new UserException("User not found exception");
     }
 
     public List<User> getUsers() {
@@ -103,8 +103,8 @@ public class Database implements Serializable {
 
     // Courses
 
-    public void addCourse(Course course) throws CourseExistsException {
-        if (this.courses.contains(course)) throw new CourseExistsException("There course already exists");
+    public void addCourse(Course course) throws CourseException {
+        if (this.courses.contains(course)) throw new CourseException("That course already exists");
         this.courses.add(course);
     }
 
@@ -113,9 +113,9 @@ public class Database implements Serializable {
     }
 
 
-    public void removeCourse(Course course) throws CourseNotFoundException {
+    public void removeCourse(Course course) throws CourseException {
         if (this.courses.contains(course)) this.courses.remove(course);
-        else throw new CourseNotFoundException("Course " + course.getName() + " is not found");
+        else throw new CourseException("Course not found");
     }
 
     // Lessons
@@ -151,22 +151,57 @@ public class Database implements Serializable {
     }
 
 
-    public void putMark(Course course, Student student, MarkType markType, double points) throws MarkWrongException, StubNotFoundException, StudentCourseException {
+    public void putMark(Course course, Student student, MarkType markType, double points) throws MarkWrongException, StubNotFoundException, StudentCourseException, CourseException {
+        if (course == null) {
+            throw new CourseException("Course not found");
+        }
         if (student == null) {
             throw new StubNotFoundException("Student not found");
         }
+        if (!student.getCourses().contains(course)) {
+            throw new StudentCourseException("Student " + student.getUsername() + " is not assigned to course " + course.getName());
+        }
+
         Mark mark = this.marks.stream().filter(item -> item.getStudent().equals(student) && item.getCourse().equals(course) && item.getMarkType() == markType).findFirst().orElse(null);
         if (mark != null) {
             throw new MarkWrongException("Impossible to change the mark");
         }
 
-        if (student.getCourses().contains(course)) {
-            mark = new Mark(student, course, points, markType);
-        } else {
-            throw new StudentCourseException("Student " + student.getUsername() + " is not assigned " + course.getName());
-        }
+        mark = new Mark(student, course, points, markType);
         this.marks.add(mark);
+        if (isStudentFailedCourse(student, course)) {
+            addFailStudent(student);
+        }
         student.setGPA(calculateGPA(student));
+    }
+
+    public void addFailStudent(Student student) {
+        System.out.print("Student " + student.getUsername() + " retaked course\n");
+        student.addFail();
+
+        if (student.getFailsCount() > 3) {
+            this.users.remove(student);
+            System.out.print("Student was expelled");
+        }
+    }
+
+    public boolean isStudentFailedCourse(Student student, Course course) {
+        Mark att1 = marks.stream().filter(m -> m.getStudent().equals(student) && m.getCourse().equals(course) && m.getMarkType() == MarkType.FIRST__ATTESTATION).findFirst().orElse(null);
+        Mark att2 = marks.stream().filter(m -> m.getStudent().equals(student) && m.getCourse().equals(course) && m.getMarkType() == MarkType.FIRST__ATTESTATION).findFirst().orElse(null);
+        Mark finaMark = marks.stream().filter(m -> m.getStudent().equals(student) && m.getCourse().equals(course) && m.getMarkType() == MarkType.FINAL).findFirst().orElse(null);
+
+        if (att1 != null && att2 != null) {
+            if (att1.getPoints() + att2.getPoints() < 30) return true;
+        }
+
+        if(finaMark != null){
+            if(finaMark.getPoints() < 19.5) {
+                return true;
+            }
+        }
+
+
+        return false;
     }
 
     public double calculateGPA(Student student) {
@@ -259,10 +294,10 @@ public class Database implements Serializable {
         return this.researchers.stream().filter(item -> item.getUser().getId() == user.getId()).findFirst().orElse(null);
     }
 
-    public void makeResearcher(int userId) throws UserNotFoundException, CantBeResearcherException {
+    public void makeResearcher(int userId) throws ResearcherException, UserException {
         User user = this.users.stream().filter(item -> item.getId() == userId).findFirst().orElse(null);
         if (user == null) {
-            throw new UserNotFoundException("");
+            throw new UserException("");
         }
         ResearcherDecorator alreadyResearcher = getResearcherByUser(user);
         if (alreadyResearcher != null) {
@@ -275,13 +310,13 @@ public class Database implements Serializable {
 
 
     // NEWS
-    public void addNews(News news) throws NewsExistsException {
+    public void addNews(News news) throws NewsException {
         if (news == null) {
             throw new IllegalArgumentException("News cannot be null");
         }
 
         if (this.news.contains(news)) {
-            throw new NewsExistsException("News " + news.getTitle() + " with id: " + news.getId() + " already exists");
+            throw new NewsException("News " + news.getTitle() + " with id: " + news.getId() + " already exists");
         }
         this.news.add(news);
     }
@@ -345,12 +380,15 @@ public class Database implements Serializable {
     }
 
     // message
-    public void sendMessage(User sender, User recipient, String text) throws PermissionException {
-        if (!(sender instanceof Employee && recipient instanceof Employee)) {
-            throw new PermissionException("Only employee can send or get the message");
+    public void sendMessage(User sender, User recipient, String text) throws PermissionException, MessageException {
+        if (!(sender instanceof Employee)) {
+            throw new PermissionException("Only employee can send the message");
+        }
+        if(!(recipient instanceof Employee)){
+            throw new MessageException("You can only send the message to other employee");
         }
         if (sender.equals(recipient)) {
-            throw new PermissionException("User can't send message to other itself");
+            throw new MessageException("User can't send message to itself");
         }
 
         this.messages.add(new Message(sender, recipient, text.trim()));

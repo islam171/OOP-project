@@ -28,4 +28,9 @@ public class Message implements Serializable {
     public String getText() {
         return text;
     }
+
+    @Override
+    public String toString() {
+        return "Message sender: " + this.getSender().getUsername() + " recipient: " + this.getRecipient().getUsername() + "\nMessage: " + this.getText() + "\n";
+    }
 }

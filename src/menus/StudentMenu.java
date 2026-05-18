@@ -2,13 +2,14 @@ package menus;
 
 import academic.Course;
 import academic.Mark;
+import exceptions.ResearcherException;
+import exceptions.UserException;
 import research.ResearcherDecorator;
 import storage.Database;
-import storage.Table;
+import storage.Log;
 import users.Student;
 import users.Teacher;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,11 +37,10 @@ public class StudentMenu {
                     5. Mark attendance
                     6. View teacher
                     7. Rate teacher
-                    8. Retake course
                     """ +
                         (isResearcher ?
-                        "9. Researcher menu\\n" :
-                        "9. Become Researcher\\n") +
+                        "8. Researcher menu\\n" :
+                        "8. Become Researcher\\n") +
                     """
                     0. Exit
                     ===========================
@@ -117,9 +117,6 @@ public class StudentMenu {
                     }
                     break;
                 case "8":
-                    student.retakeCourse();
-                    break;
-                case "9":
                     if (isResearcher) {
                         ResearcherDecorator rd = database.getResearcherByUser(this.student);
                         new ResearcherMenu(rd).menu();
@@ -153,20 +150,15 @@ public class StudentMenu {
         }
     }
 
-    private void becomeResearcher(Scanner input, Database database) {
-        System.out.print("Confirm becoming a researcher? (yes/no): ");
-        String confirm = input.nextLine().trim();
-
-        if (!confirm.equalsIgnoreCase("yes")) {
-            System.out.println("Cancelled.");
-            return;
-        }
-
-        try {
-            database.makeResearcher(this.student.getId());
+    public void becomeResearcher(Scanner input, Database database) {
+        try{
+            this.student.becomeResearcher();
             System.out.println("You are now registered as a Researcher!");
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+
+            Log log = new Log(database.getUser().getUsername(), "become researcher");
+            database.addLogs(log);
+        } catch (ResearcherException | UserException e) {
+            System.out.print(e.getMessage() + "\n");
         }
     }
 

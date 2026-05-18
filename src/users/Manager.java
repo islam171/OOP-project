@@ -9,7 +9,6 @@ import storage.Database;
 import types.ManagerType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,17 +35,17 @@ public class Manager extends Employee {
         Database database = Database.getInstance();
         try {
             database.addCourse(course);
-        }catch (CourseExistsException e){
+        }catch (CourseException e){
             throw new RuntimeException(e);
         }
     }
 
-    public void removeCourse(Course course) throws CourseNotFoundException {
+    public void removeCourse(Course course) throws CourseException {
         Database database = Database.getInstance();
         database.removeCourse(course);
     }
 
-    public void addNews(News news) throws NewsExistsException {
+    public void addNews(News news) throws NewsException {
         Database database = Database.getInstance();
         database.addNews(news);
     }
@@ -56,7 +55,7 @@ public class Manager extends Employee {
         database.removeNews(news);
     }
 
-    public void approveRegistration(RegistrationRequest request) throws CourseExistsException {
+    public void approveRegistration(RegistrationRequest request) throws CourseException {
         Student student = request.getStudent();
         student.addCourse(request.getCourse());
     }
@@ -67,9 +66,9 @@ public class Manager extends Employee {
     }
 
 
-    public void assignTeacher(Teacher teacher, Course course) throws CourseHasInstructor, CourseNotFoundException, TeacherNotFoundException {
+    public void assignTeacher(Teacher teacher, Course course) throws CourseException, TeacherNotFoundException {
         if(course == null){
-            throw new CourseNotFoundException("");
+            throw new CourseException("Course not found");
         }
         if(teacher == null){
             throw new TeacherNotFoundException("");
@@ -78,7 +77,7 @@ public class Manager extends Employee {
             course.setInstructor(teacher);
             return;
         }
-        throw new CourseHasInstructor("This course already has instructor");
+        throw new CourseException("This course already has instructor");
     }
 
 

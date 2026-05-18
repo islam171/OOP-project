@@ -1,14 +1,11 @@
 package users;
 
 
-import exceptions.UserExistsException;
-import exceptions.UserNotFoundException;
-import main.UniSystem;
+import exceptions.UserException;
 import storage.Database;
 import storage.Log;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class Admin extends Employee {
 
@@ -16,7 +13,7 @@ public class Admin extends Employee {
         super(username, password, salary);
     }
 
-    public void addUser(User user) throws UserExistsException, UserNotFoundException {
+    public void addUser(User user) throws UserException {
         Database database= Database.getInstance();
         database.addUser(user);
     }
@@ -26,7 +23,7 @@ public class Admin extends Employee {
         return database.getUsers();
     }
 
-    public void removeUser(int userId) throws UserNotFoundException {
+    public void removeUser(int userId) throws UserException {
         Database database = Database.getInstance();
         User user = database.getUserById(userId);
         database.deleteUser(user);

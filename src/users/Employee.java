@@ -2,12 +2,10 @@ package users;
 
 
 import academic.Message;
-import exceptions.PermissionException;
-import main.UniSystem;
+import exceptions.*;
 import storage.Database;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class Employee extends User {
 
@@ -18,6 +16,10 @@ public class Employee extends User {
         setSalary(salary);
     }
 
+    public String toString() {
+        return super.toString();
+    }
+
     public double getSalary() {
         return salary;
     }
@@ -26,7 +28,7 @@ public class Employee extends User {
         this.salary = salary;
     }
 
-    public void sendMessage(User recipient, String text) throws PermissionException {
+    public void sendMessage(User recipient, String text) throws PermissionException, MessageException {
         Database database = Database.getInstance();
         database.sendMessage(this, recipient, text);
     }
@@ -34,17 +36,24 @@ public class Employee extends User {
     public void viewMessages() throws PermissionException {
         Database database = Database.getInstance();
         List<Message> messages = database.getReceivedMessage(this);
-        if(messages.isEmpty()){
+        if (messages.isEmpty()) {
             System.out.print("No message");
             return;
         }
-        System.out.println("Messages: ");
-        for(Message m : messages){
+        System.out.println("Messages: \n");
+        for (Message m : messages) {
             System.out.println(m);
         }
     }
 
-    public String toString(){
-        return super.toString();
+    public void becomeResearcher() throws ResearcherException, UserException {
+        Database database = Database.getInstance();
+        if (database.getResearcherByUser(this) != null) {
+            throw new ResearcherException("User is already researcher");
+        }
+
+        database.makeResearcher(this.getId());
+
     }
+
 }

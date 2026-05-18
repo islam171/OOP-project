@@ -6,6 +6,7 @@ import research.ResearchProject;
 import research.ResearcherDecorator;
 import storage.Database;
 import exceptions.ProjectExistsException;
+import storage.Log;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -44,7 +45,7 @@ public class ResearcherMenu {
 
             switch (command) {
                 case "1" -> viewPapers();
-                case "2" -> addPaper(input);
+                case "2" -> addPaper(input, database);
                 case "3" -> researcher.printPapers(new PaperComparatorByCitation());
                 case "4" -> researcher.printPapers((a, b) -> a.getDate().compareTo(b.getDate()));
                 case "5" -> researcher.printPapers((a, b) -> Integer.compare(a.getPages(), b.getPages()));
@@ -70,7 +71,7 @@ public class ResearcherMenu {
         }
     }
 
-    private void addPaper(Scanner input) {
+    private void addPaper(Scanner input, Database db) {
         try {
             System.out.print("Enter paper name: ");
             String name = input.nextLine().trim();
@@ -92,6 +93,8 @@ public class ResearcherMenu {
             ResearchPaper paper = new ResearchPaper(name, pages, date);
             researcher.addPaper(paper);
             System.out.println("Paper added successfully!");
+            Log log = new Log(db.getUser().getUsername(), "added paper");
+            db.addLogs(log);
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid number format.");
@@ -133,6 +136,8 @@ public class ResearcherMenu {
             ResearchProject project = available.get(choice - 1);
             researcher.joinProject(project);
             System.out.println("Successfully joined: " + project.getTopic());
+            Log log = new Log(database.getUser().getUsername(), "joined to project " + project.getTopic());
+            database.addLogs(log);
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid input.");
@@ -152,6 +157,8 @@ public class ResearcherMenu {
             project.addParticipant(researcher); // создатель сразу участник
             database.addProject(project);
             System.out.println("Project created: " + topic);
+            Log log = new Log(database.getUser().getUsername(), "created project");
+            database.addLogs(log);
 
         } catch (ProjectExistsException e) {
             System.out.println("Error: " + e.getMessage());
