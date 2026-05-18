@@ -58,6 +58,7 @@ public class Manager extends Employee {
     public void approveRegistration(RegistrationRequest request) throws CourseException {
         Student student = request.getStudent();
         student.addCourse(request.getCourse());
+        Database.getInstance().removeRequest(request);
     }
 
     public void rejectRegistration(RegistrationRequest request) {
@@ -73,7 +74,7 @@ public class Manager extends Employee {
         if(teacher == null){
             throw new TeacherNotFoundException("");
         }
-        if (course.getInstructor() != null) {
+        if (course.getInstructor() == null) {
             course.setInstructor(teacher);
             return;
         }

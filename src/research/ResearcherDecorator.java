@@ -18,13 +18,6 @@ public class ResearcherDecorator implements Researcher, Serializable {
     private List<ResearchPaper> papers = new ArrayList<>();
 
     public ResearcherDecorator(User user) throws ResearcherException {
-        if(user instanceof Student){
-            Student student = (Student) user;
-            if(student.getYearOfStudy() != 4){
-                throw new ResearcherException("Student who is not in his 4th year cannot be a researcher");
-            }
-
-        }
         if(user instanceof Admin){
             throw new ResearcherException("Admin cannot be researcher");
         }
@@ -42,6 +35,7 @@ public class ResearcherDecorator implements Researcher, Serializable {
 
     @Override
     public int getHIndex() {
+        if(getPapers().isEmpty()) return 0;
         this.papers.sort(new PaperComparatorByCitation());
         int min = this.papers.getFirst().getCitation();
 
@@ -75,7 +69,6 @@ public class ResearcherDecorator implements Researcher, Serializable {
     @Override
     public void printPapers(Comparator<ResearchPaper> comparator) {
         this.papers.sort(comparator);
-        Collections.sort(this.papers, comparator);
         for(ResearchPaper p : this.papers){
             System.out.println(p);
         }

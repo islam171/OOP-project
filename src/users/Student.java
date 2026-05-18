@@ -1,6 +1,7 @@
 package users;
 
 import exceptions.*;
+import research.ResearcherDecorator;
 import types.Attendance;
 import academic.Course;
 import academic.Lesson;
@@ -20,11 +21,27 @@ public class Student extends User {
     private int failsCount = 0;
     private String specialty;
     private Vector<Course> courses = new Vector<>();
+    private ResearcherDecorator supervisor = null;
 
     public Student(String username, String password, String specialty, int yearOfStudy) {
         super(username, password);
         this.yearOfStudy = yearOfStudy;
         this.specialty = specialty;
+    }
+
+
+    public void setSupervisor(ResearcherDecorator supervisor) throws SupervisorException {
+        if (this.yearOfStudy != 4) {
+            throw new SupervisorException("Only 4th year students can have a supervisor");
+        }
+        if (supervisor.getHIndex() < 3) {
+            throw new SupervisorException("Supervisor h-index must be >= 3");
+        }
+        this.supervisor = supervisor;
+    }
+
+    public ResearcherDecorator getSupervisor() {
+        return supervisor;
     }
 
 
@@ -133,8 +150,10 @@ public class Student extends User {
     }
 
     public void addCourse(Course course) throws CourseException {
-        if (!this.courses.contains(course))
+        if (!this.courses.contains(course)) {
             this.courses.add(course);
+            this.totalCredits += course.getCredit();
+        }
         else
             throw new CourseException("Student already has this course");
     }

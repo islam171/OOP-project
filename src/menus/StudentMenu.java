@@ -39,8 +39,8 @@ public class StudentMenu {
                     7. Rate teacher
                     """ +
                         (isResearcher ?
-                        "8. Researcher menu\\n" :
-                        "8. Become Researcher\\n") +
+                        "8. Researcher menu\n" :
+                        "8. Become Researcher\n") +
                     """
                     0. Exit
                     ===========================
@@ -123,6 +123,7 @@ public class StudentMenu {
                     } else {
                         becomeResearcher(input, database);
                     }
+                    break;
                 case "0":
                     return;
                 default:
