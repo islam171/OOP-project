@@ -8,6 +8,7 @@ import types.MarkType;
 import storage.Database;
 import types.TeacherType;
 
+import java.rmi.StubNotFoundException;
 import java.util.List;
 
 public class Teacher extends Employee {
@@ -21,7 +22,7 @@ public class Teacher extends Employee {
     }
 
     public String toString() {
-        return "Teacher: " + super.toString() + "; teacher type: " + this.teacherType;
+        return "Teacher: " + super.toString() + " teacher type: " + this.teacherType;
     }
 
     public TeacherType getTeacherType() {
@@ -67,7 +68,7 @@ public class Teacher extends Employee {
         }
     }
 
-    public void putMark(Student student, MarkType markType, double points) throws TeacherException, MarkWrongException {
+    public void putMark(Student student, MarkType markType, double points) throws TeacherException, MarkWrongException, StubNotFoundException {
         Database database = Database.getInstance();
         Course course = database.getCourses().stream().filter(item -> {
             if (item.getInstructor() != null)
@@ -81,14 +82,14 @@ public class Teacher extends Employee {
         }
     }
 
-    public void viewStudentInfo(int id) {
+    public void viewStudentInfo(int id) throws StubNotFoundException {
         Database database = Database.getInstance();
         Student student = database.getStudentById(id);
         if (student != null) {
             System.out.println(student);
             return;
         }
-        throw new IllegalArgumentException("There is no student with this id");
+        throw new StubNotFoundException("");
     }
 
 }

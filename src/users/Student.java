@@ -2,6 +2,7 @@ package users;
 
 import exceptions.CourseExistsException;
 import exceptions.RatingTeacherException;
+import exceptions.StudentCourseException;
 import types.Attendance;
 import academic.Course;
 import academic.Lesson;
@@ -52,17 +53,17 @@ public class Student extends User implements Retakes {
 
     public void viewTranscript() {
         System.out.println("Transcript for " + getUsername());
-        System.out.println("GPA: " + GPA + " | Fails: " + failsCount);
+        System.out.println("GPA: " + getGPA() + " | Fails: " + failsCount);
     }
 
-    public void rateTeacher(Teacher teacher, int rating) throws RatingTeacherException {
+    public void rateTeacher(Teacher teacher, int rating) throws RatingTeacherException, StudentCourseException {
         if (rating < 0 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }
 
         Database database = Database.getInstance();
-        if (!this.getCourses().stream().allMatch(item -> item.getInstructor().equals(teacher))) {
-            throw new RuntimeException("Student is not enrolled with this teacher");
+        if (this.getCourses().stream().noneMatch(item -> item.getInstructor().equals(teacher))) {
+            throw new StudentCourseException("");
         }
         database.addTeacherRating(teacher, this, rating);
     }
@@ -139,5 +140,9 @@ public class Student extends User implements Retakes {
             this.courses.add(course);
         else
             throw new CourseExistsException("Student already has this course");
+    }
+
+    public String toString(){
+        return "Student; " + super.toString();
     }
 }

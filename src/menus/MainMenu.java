@@ -4,10 +4,7 @@ import exceptions.AuthUserDoesNotExist;
 import exceptions.AuthWrongPassword;
 import exceptions.UserExistsException;
 import storage.Database;
-import users.Admin;
-import users.Manager;
-import users.Student;
-import users.User;
+import users.*;
 
 import java.util.Scanner;
 
@@ -57,9 +54,21 @@ public class MainMenu {
                 }else if (user instanceof Student){
                     StudentMenu studentMenu = new StudentMenu((Student) user);
                     studentMenu.menu();
+                }else if(user instanceof Teacher){
+                    TeacherMenu teacherMenu = new TeacherMenu((Teacher) user);
+                    teacherMenu.menu();
+                }else if(user instanceof Employee){
+                    EmployeeMenu employeeMenu = new EmployeeMenu((Employee) user);
+                    employeeMenu.menu();
                 }
             } else if (command.equals("2")) {
-                System.out.println("Bye\n");
+                System.out.print("""
+                           ____    ___     ___    ____      ____   __   __  _____\s
+                          / ___|  / _ \\   / _ \\  |  _ \\    | __ )  \\ \\ / / | ____|
+                         | |  _  | | | | | | | | | | | |   |  _ \\   \\ V /  |  _| \s
+                         | |_| | | |_| | | |_| | | |_| |   | |_) |   | |   | |___\s
+                          \\____|  \\___/   \\___/  |____/    |____/    |_|   |_____|
+                        """);
                 break;
             } else {
                 System.out.print("Incorrect command\n");
